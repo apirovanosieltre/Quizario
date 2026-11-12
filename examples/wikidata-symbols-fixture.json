@@ -1,0 +1,109 @@
+{
+  "head": {
+    "vars": [
+      "element",
+      "elementLabel",
+      "atomicNumber",
+      "symbol"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "element": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q556"
+        },
+        "elementLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "idrogeno"
+        },
+        "atomicNumber": {
+          "type": "literal",
+          "value": "1"
+        },
+        "symbol": {
+          "type": "literal",
+          "value": "H"
+        }
+      },
+      {
+        "element": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q560"
+        },
+        "elementLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "elio"
+        },
+        "atomicNumber": {
+          "type": "literal",
+          "value": "2"
+        },
+        "symbol": {
+          "type": "literal",
+          "value": "He"
+        }
+      },
+      {
+        "element": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q283"
+        },
+        "elementLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "carbonio"
+        },
+        "atomicNumber": {
+          "type": "literal",
+          "value": "6"
+        },
+        "symbol": {
+          "type": "literal",
+          "value": "C"
+        }
+      },
+      {
+        "element": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q627"
+        },
+        "elementLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "azoto"
+        },
+        "atomicNumber": {
+          "type": "literal",
+          "value": "7"
+        },
+        "symbol": {
+          "type": "literal",
+          "value": "N"
+        }
+      },
+      {
+        "element": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q623"
+        },
+        "elementLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "ossigeno"
+        },
+        "atomicNumber": {
+          "type": "literal",
+          "value": "8"
+        },
+        "symbol": {
+          "type": "literal",
+          "value": "O"
+        }
+      }
+    ]
+  }
+}
