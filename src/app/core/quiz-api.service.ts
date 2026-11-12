@@ -26,12 +26,19 @@ export interface QuizAnswer {
 }
 export interface EditorialOption { option_index:number;answer_text:string;is_correct:number; }
 export interface EditorialQuestion {
-  id:string; prompt:string; explanation:string; category_slug:string;
+  id:string; prompt:string; explanation:string|null; category_slug:string;
   editor_difficulty:string; effective_difficulty:string; status:string;
-  source_url:string; source_id:string; verified_at:string|null;
-  created_at:string; option_count:number; options:EditorialOption[];
+  language:string; source_url:string; source_id:string; source_item_id:string|null;
+  verified_at:string|null; revision:number; possible_duplicate:boolean;
+  created_at:string; options:EditorialOption[];
 }
-
+export interface EditorialDraft {
+  revision:number;prompt:string;explanation:string;category:string;difficulty:string;
+  sourceUrl:string;answers:string[];correctIndex:number;
+}
+export interface ReviewFilter {
+  status:string;category?:string;difficulty?:string;search?:string;offset?:number;limit?:number;
+}
 @Injectable({providedIn:'root'})
 export class QuizApiService {
   private readonly http=inject(HttpClient);
@@ -45,8 +52,23 @@ export class QuizApiService {
   answer(sessionToken:string,position:number,optionIndex:number):Promise<QuizAnswer> {
     return firstValueFrom(this.http.post<QuizAnswer>('/api/quiz/answer',{sessionToken,position,optionIndex}));
   }
-  review(status:string):Promise<{items:EditorialQuestion[]}> {
-    return firstValueFrom(this.http.get<{items:EditorialQuestion[]}>('/api/admin/questions',{params:{status}}));
+  review(filter:ReviewFilter):Promise<{items:EditorialQuestion[];total:number;offset:number;limit:number}> {
+    const params:Record<string,string>={status:filter.status};
+    if(filter.category)params['category']=filter.category;
+    if(filter.difficulty)params['difficulty']=filter.difficulty;
+    if(filter.search)params['search']=filter.search;
+    if(filter.offset!==undefined)params['offset']=String(filter.offset);
+    if(filter.limit!==undefined)params['limit']=String(filter.limit);
+    return firstValueFrom(this.http.get<{items:EditorialQuestion[];total:number;offset:number;limit:number}>('/api/admin/questions',{params}));
+  }
+  reviewSummary():Promise<{counts:{status:string;total:number}[]}> {
+    return firstValueFrom(this.http.get<{counts:{status:string;total:number}[]}>('/api/admin/questions/summary'));
+  }
+  editQuestion(id:string,draft:EditorialDraft):Promise<void> {
+    return firstValueFrom(this.http.put<void>(`/api/admin/questions/${encodeURIComponent(id)}/edit`,draft));
+  }
+  bulkQuestions(ids:string[],action:'review'|'reject'):Promise<{ok:boolean;updated:number}> {
+    return firstValueFrom(this.http.post<{ok:boolean;updated:number}>('/api/admin/questions/bulk',{ids,action}));
   }
   moderate(id:string,action:'publish'|'reject'):Promise<void> {
     return firstValueFrom(this.http.post<void>(`/api/admin/questions/${encodeURIComponent(id)}/${action}`,action==='publish'?{verified:true}:{}));

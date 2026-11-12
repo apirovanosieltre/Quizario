@@ -255,54 +255,157 @@ async function answer(request:Request,env:QuizEnv,user:Player|null):Promise<Resp
     score:summary?.score??0,total:summary?.total??0,completed});
 }
 
+/** Editorial endpoints. All actions require an authenticated email in ADMIN_EMAILS. */
 async function admin(request:Request,env:QuizEnv,user:Player|null,path:string):Promise<Response>{
   const emails=(env.ADMIN_EMAILS??'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean);
   if(!user||!emails.includes(user.email.toLowerCase()))throw new QuizError(403,'Accesso riservato agli amministratori.');
+
   if(path==='/api/admin/questions' && request.method==='GET'){
-    const url=new URL(request.url);const status=url.searchParams.get('status')??'review';
-    if(!['draft','review','published','rejected'].includes(status))throw new QuizError(400,'Stato non valido.');
-    const rows=await env.DB.prepare(`SELECT q.id,q.prompt,q.explanation,q.category_slug,q.editor_difficulty,q.effective_difficulty,
-       q.status,q.source_url,q.source_id,q.verified_at,q.created_at,
-       o.option_index,o.answer_text,o.is_correct
-       FROM (SELECT * FROM questions WHERE status=? ORDER BY created_at DESC,id LIMIT 50) q
-       LEFT JOIN question_options o ON o.question_id=q.id
-       ORDER BY q.created_at DESC,q.id,o.option_index`).bind(status).all();
-    const items:{[key:string]:unknown;options:{option_index:number;answer_text:string;is_correct:number}[]}[]=[];
+    const url=new URL(request.url);
+    const status=url.searchParams.get('status')??'draft';
+    if(!['draft','review','published','rejected','archived'].includes(status))throw new QuizError(400,'Stato non valido.');
+    const category=url.searchParams.get('category')??'';
+    const difficulty=url.searchParams.get('difficulty')??'';
+    const search=(url.searchParams.get('search')??'').trim().slice(0,80);
+    if(category && !/^[a-z0-9-]{2,40}$/.test(category))throw new QuizError(400,'Categoria non valida.');
+    if(difficulty && !['easy','medium','hard'].includes(difficulty))throw new QuizError(400,'Difficoltà non valida.');
+    const offsetRaw=Number(url.searchParams.get('offset')??'0');
+    const limitRaw=Number(url.searchParams.get('limit')??'20');
+    if(!Number.isInteger(offsetRaw)||offsetRaw<0||offsetRaw>100000||!Number.isInteger(limitRaw)||limitRaw<1||limitRaw>50)
+      throw new QuizError(400,'Paginazione non valida.');
+    const filters=["q.status=?"];
+    const values:(string|number)[]=[status];
+    if(category){filters.push('q.category_slug=?');values.push(category);}
+    if(difficulty){filters.push('q.editor_difficulty=?');values.push(difficulty);}
+    if(search){
+      filters.push("(LOWER(q.prompt) LIKE ? ESCAPE '!' OR LOWER(COALESCE(q.source_item_id,'')) LIKE ? ESCAPE '!')");
+      const escaped=`%${search.toLowerCase().replace(/[!%_]/g,char=>'!'+char)}%`;
+      values.push(escaped,escaped);
+    }
+    const where=filters.join(' AND ');
+    const total=await env.DB.prepare(`SELECT COUNT(*) AS n FROM questions q WHERE ${where}`).bind(...values).first<{n:number}>();
+    const rows=await env.DB.prepare(`
+      SELECT q.id,q.prompt,q.explanation,q.category_slug,q.language,q.editor_difficulty,q.effective_difficulty,
+        q.status,q.source_url,q.source_id,q.source_item_id,q.verified_at,q.created_at,q.revision,
+        EXISTS (SELECT 1 FROM questions d WHERE d.id<>q.id AND LOWER(TRIM(d.prompt))=LOWER(TRIM(q.prompt))
+          AND d.status NOT IN ('rejected','archived')) AS possible_duplicate,
+        o.option_index,o.answer_text,o.is_correct
+      FROM (SELECT * FROM questions q WHERE ${where} ORDER BY q.created_at DESC,q.id DESC LIMIT ? OFFSET ?) q
+      LEFT JOIN question_options o ON o.question_id=q.id
+      ORDER BY q.created_at DESC,q.id DESC,o.option_index
+    `).bind(...values,limitRaw,offsetRaw).all();
+    const items:{[key:string]:unknown; options:{option_index:number;answer_text:string;is_correct:number}[]}[]=[];
     for(const row of rows.results??[]){
       if(items.at(-1)?.['id']!==row['id']){
         items.push({id:row['id'],prompt:row['prompt'],explanation:row['explanation'],category_slug:row['category_slug'],
-          editor_difficulty:row['editor_difficulty'],effective_difficulty:row['effective_difficulty'],status:row['status'],
-          source_url:row['source_url'],source_id:row['source_id'],verified_at:row['verified_at'],created_at:row['created_at'],options:[]});
+          language:row['language'],editor_difficulty:row['editor_difficulty'],effective_difficulty:row['effective_difficulty'],
+          status:row['status'],source_url:row['source_url'],source_id:row['source_id'],source_item_id:row['source_item_id'],
+          verified_at:row['verified_at'],created_at:row['created_at'],revision:row['revision'],
+          possible_duplicate:Boolean(row['possible_duplicate']),options:[]});
       }
       if(row['option_index']!=null)items.at(-1)?.options.push({option_index:Number(row['option_index']),
         answer_text:String(row['answer_text']),is_correct:Number(row['is_correct'])});
     }
-    return reply({items,filter:status});
+    return reply({items,total:total?.n??0,offset:offsetRaw,limit:limitRaw,filter:status});
   }
-  const match=/^\/api\/admin\/questions\/([a-zA-Z0-9:_-]{2,100})\/(publish|reject)$/.exec(path);
-  if(match && request.method==='POST'){
+
+  if(path==='/api/admin/questions/summary' && request.method==='GET'){
+    const rows=await env.DB.prepare(`SELECT status,COUNT(*) AS total FROM questions GROUP BY status`).all();
+    return reply({counts:rows.results??[]});
+  }
+
+  if(path==='/api/admin/questions/bulk' && request.method==='POST'){
     const body=await requestJson(request);
-    const [_,id,action]=match;
-    if(action==='publish'){
-      if(body['verified']!==true)throw new QuizError(400,'Conferma di aver verificato la fonte e la risposta.');
-      const prepared=await env.DB.prepare(`SELECT q.language,q.explanation,q.source_url,
-        COUNT(o.option_index) AS total,SUM(o.is_correct) AS correct
-        FROM questions q LEFT JOIN question_options o ON q.id=o.question_id
-        WHERE q.id=? AND q.status IN ('draft','review') GROUP BY q.id`).bind(id).first<{
-          language:string; explanation:string|null; source_url:string; total:number; correct:number;
-        }>();
-      if(!prepared)throw new QuizError(404,'Domanda non trovata o già revisionata.');
-      if(prepared.language!=='it'||!prepared.explanation||prepared.explanation.trim().length<12||
-          prepared.total!==4||prepared.correct!==1||!/^https:\/\//.test(prepared.source_url))
-        throw new QuizError(409,'Non pubblicabile: servono quattro risposte, una corretta, spiegazione in italiano e fonte HTTPS.');
-      await env.DB.prepare(`UPDATE questions SET status='published',verified_at=?,published_at=COALESCE(published_at,?),
-        updated_at=datetime('now') WHERE id=? AND status IN ('draft','review')`)
-        .bind(new Date().toISOString(),new Date().toISOString(),id).run();
-    }else{
-      await env.DB.prepare("UPDATE questions SET status='rejected',updated_at=datetime('now') WHERE id=? AND status IN ('draft','review')")
-        .bind(id).run();
+    const action=body['action'];
+    const rawIds=body['ids'];
+    if(action!=='review'&&action!=='reject')throw new QuizError(400,'Azione non valida.');
+    if(!Array.isArray(rawIds)||rawIds.length===0||rawIds.length>20||
+       rawIds.some(x=>typeof x!=='string'||!/^[-a-zA-Z0-9:_]{2,100}$/.test(x))||
+       new Set(rawIds).size!==rawIds.length)throw new QuizError(400,'Seleziona da 1 a 20 domande distinte.');
+    const ids=rawIds as string[];
+    const placeholders=ids.map(()=>'?').join(',');
+    const next=action==='review'?'review':'rejected';
+    const current=action==='review'?"status='draft'":"status IN ('draft','review')";
+    const result=await env.DB.prepare(`UPDATE questions SET status=?,updated_at=datetime('now')
+      WHERE id IN (${placeholders}) AND ${current}`).bind(next,...ids).run();
+    return reply({ok:true,updated:result.meta?.changes??0});
+  }
+
+  const match=/^\/api\/admin\/questions\/([a-zA-Z0-9:_-]{2,100})\/(edit|publish|reject)$/.exec(path);
+  if(match){
+    const id=match[1];
+    const action=match[2];
+    if(action==='edit' && request.method==='PUT'){
+      const body=await requestJson(request);
+      const current=await env.DB.prepare('SELECT status,revision FROM questions WHERE id=?').bind(id)
+        .first<{status:string;revision:number}>();
+      if(!current||!['draft','review'].includes(current.status))throw new QuizError(409,'Solo bozze o domande in revisione possono essere modificate.');
+      const revision=body['revision'];
+      if(!Number.isInteger(revision)||revision!==current.revision)throw new QuizError(409,'La domanda è stata modificata altrove. Ricarica prima di salvare.');
+      const prompt=requireString(body['prompt'],'Domanda',500);
+      const explanation=requireString(body['explanation'],'Spiegazione',1000);
+      const sourceUrl=requireString(body['sourceUrl'],'Fonte URL',500);
+      const category=requireString(body['category'],'Categoria',40);
+      const difficulty=body['difficulty'];
+      const answers=body['answers'];
+      const correctIndex=body['correctIndex'];
+      if(prompt.length<12||explanation.length<12)throw new QuizError(400,'Domanda o spiegazione troppo breve.');
+      if(!/^[a-z0-9-]{2,40}$/.test(category))throw new QuizError(400,'Categoria non valida.');
+      if(!['easy','medium','hard'].includes(String(difficulty)))throw new QuizError(400,'Difficoltà non valida.');
+      if(!Array.isArray(answers)||answers.length!==4||answers.some(a=>typeof a!=='string'||
+        a.trim().length<1||a.trim().length>200)||!Number.isInteger(correctIndex)||Number(correctIndex)<0||Number(correctIndex)>3)
+        throw new QuizError(400,'Servono quattro risposte valide e una sola corretta.');
+      const cleaned=answers.map(a=>(a as string).trim()) as string[];
+      if(new Set(cleaned.map(a=>a.toLocaleLowerCase('it'))).size!==4)throw new QuizError(409,'Le quattro risposte devono essere diverse.');
+      let url:URL;
+      try{url=new URL(sourceUrl);}catch{throw new QuizError(400,'Fonte HTTPS non valida.');}
+      if(url.protocol!=='https:'||!url.hostname)throw new QuizError(400,'Fonte HTTPS non valida.');
+      const categoryFound=await env.DB.prepare('SELECT slug FROM question_categories WHERE slug=?').bind(category).first();
+      if(!categoryFound)throw new QuizError(400,'Categoria inesistente.');
+      const contentHash=await digest(`it|${prompt.toLocaleLowerCase('it')}|${cleaned[Number(correctIndex)].toLocaleLowerCase('it')}`);
+      const dup=await env.DB.prepare('SELECT id FROM questions WHERE content_hash=? AND id<>?').bind(contentHash,id).first();
+      if(dup)throw new QuizError(409,'Questa domanda e risposta esistono già in archivio.');
+      // D1 batch is atomic. Guards on the bumped revision keep stale writes from deleting options.
+      const afterRevision=current.revision+1;
+      const commands=[env.DB.prepare(`UPDATE questions SET prompt=?,explanation=?,category_slug=?,language='it',
+        editor_difficulty=?,effective_difficulty=?,source_url=?,content_hash=?,status='draft',verified_at=NULL,
+        revision=revision+1,updated_at=datetime('now') WHERE id=? AND revision=? AND status IN ('draft','review')`)
+        .bind(prompt,explanation,category,difficulty,difficulty,url.href,contentHash,id,revision),
+        env.DB.prepare(`DELETE FROM question_options WHERE question_id=? AND EXISTS
+          (SELECT 1 FROM questions WHERE id=? AND revision=? AND status='draft')`).bind(id,id,afterRevision),
+        ...cleaned.map((answer,index)=>env.DB.prepare(`INSERT INTO question_options(question_id,option_index,answer_text,is_correct)
+          SELECT ?,?,?,? WHERE EXISTS (SELECT 1 FROM questions WHERE id=? AND revision=? AND status='draft')`)
+          .bind(id,index,answer,index===correctIndex?1:0,id,afterRevision))];
+      const result=await env.DB.batch(commands);
+      if(result[0]?.meta?.changes!==1)throw new QuizError(409,'Modifica concorrente: ricarica le domande.');
+      return reply({ok:true,revision:afterRevision});
     }
-    return reply({ok:true});
+    if(request.method==='POST' && (action==='publish'||action==='reject')){
+      const body=await requestJson(request);
+      if(action==='publish'){
+        if(body['verified']!==true)throw new QuizError(400,'Conferma di aver verificato la fonte e la risposta.');
+        const prepared=await env.DB.prepare(`SELECT q.language,q.explanation,q.source_url,
+          COUNT(o.option_index) AS total,SUM(o.is_correct) AS correct
+          FROM questions q LEFT JOIN question_options o ON q.id=o.question_id
+          WHERE q.id=? AND q.status IN ('draft','review') GROUP BY q.id`).bind(id).first<{
+            language:string;explanation:string|null;source_url:string;total:number;correct:number;
+          }>();
+        if(!prepared)throw new QuizError(404,'Domanda non trovata o già revisionata.');
+        if(prepared.language!=='it'||!prepared.explanation||prepared.explanation.trim().length<12||
+            prepared.total!==4||prepared.correct!==1||!/^https:\/\//.test(prepared.source_url))
+          throw new QuizError(409,'Non pubblicabile: servono quattro risposte, una corretta, spiegazione in italiano e fonte HTTPS.');
+        const duplicate=await env.DB.prepare(`SELECT id FROM questions WHERE id<>? AND status='published'
+          AND LOWER(TRIM(prompt))=(SELECT LOWER(TRIM(prompt)) FROM questions WHERE id=?) LIMIT 1`).bind(id,id).first();
+        if(duplicate)throw new QuizError(409,'Esiste già una domanda pubblicata con lo stesso testo.');
+        await env.DB.prepare(`UPDATE questions SET status='published',verified_at=?,published_at=COALESCE(published_at,?),
+          updated_at=datetime('now') WHERE id=? AND status IN ('draft','review')`)
+          .bind(new Date().toISOString(),new Date().toISOString(),id).run();
+      }else{
+        await env.DB.prepare("UPDATE questions SET status='rejected',updated_at=datetime('now') WHERE id=? AND status IN ('draft','review')")
+          .bind(id).run();
+      }
+      return reply({ok:true});
+    }
   }
   throw new QuizError(404,'Endpoint amministrativo non trovato.');
 }
