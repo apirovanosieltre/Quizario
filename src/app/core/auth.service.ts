@@ -11,16 +11,22 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   readonly user = signal<AccountUser | null>(null);
   readonly loading = signal(true);
+  private bootstrapPromise: Promise<void>|null = null;
 
-  async bootstrap(): Promise<void> {
-    try {
-      const response = await firstValueFrom(this.http.get<UserResponse>('/api/auth/me'));
-      this.user.set(response.user);
-    } catch {
-      this.user.set(null);
-    } finally {
-      this.loading.set(false);
-    }
+  /** One shared request, so daily status never races the initial auth bootstrap. */
+  bootstrap(): Promise<void> {
+    if (this.bootstrapPromise) return this.bootstrapPromise;
+    this.bootstrapPromise = (async () => {
+      try {
+        const response = await firstValueFrom(this.http.get<UserResponse>('/api/auth/me'));
+        this.user.set(response.user);
+      } catch {
+        this.user.set(null);
+      } finally {
+        this.loading.set(false);
+      }
+    })();
+    return this.bootstrapPromise;
   }
 
   async login(email: string, password: string): Promise<void> {

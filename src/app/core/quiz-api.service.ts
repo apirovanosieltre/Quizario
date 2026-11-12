@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import type { DailySummary } from './daily-streak';
 
 export type Difficulty = 'easy'|'medium'|'hard'|'mixed';
 export type QuizMode = 'free'|'daily';
@@ -56,6 +57,7 @@ export interface ReviewFilter {
 export class QuizApiService {
   private readonly http=inject(HttpClient);
   catalog():Promise<QuizCatalog> { return firstValueFrom(this.http.get<QuizCatalog>('/api/quiz/catalog')); }
+  dailyStatus():Promise<DailySummary> { return firstValueFrom(this.http.get<DailySummary>('/api/quiz/daily/status')); }
   start(mode:QuizMode, category:string|null, difficulty:Difficulty='mixed', count=10):Promise<QuizSession> {
     return firstValueFrom(this.http.post<QuizSession>('/api/quiz/start',mode==='daily'?{mode}:{mode,category,difficulty,count}));
   }

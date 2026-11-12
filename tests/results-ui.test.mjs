@@ -14,7 +14,7 @@ new Function('require','exports','module',compiled)((id)=>{
   if(id==='@angular/core')return angular;
   throw Error('Unexpected dependency '+id);
 },mod.exports,mod);
-const {bestComparableAttempt,beatsPreviousBest}=mod.exports;
+const {bestComparableAttempt,beatsPreviousBest,compactAttempts}=mod.exports;
 
 test('record comparisons respect category, length and difficulty',()=>{
   const attempts=[
@@ -38,4 +38,21 @@ test('record requires genuine improvement, not merely the first attempt',()=>{
   assert.equal(beatsPreviousBest(3,59,prev),true);
   assert.equal(beatsPreviousBest(3,60,prev),false);
   assert.equal(beatsPreviousBest(2,15,prev),false);
+});
+
+test('local retention keeps daily streak history despite frequent free quizzes',()=>{
+  const daily=[
+    {slug:'daily',date:'2026-11-10',correct:1,total:10,durationSeconds:30,ownerId:null},
+    {slug:'daily',date:'2026-11-11',correct:2,total:10,durationSeconds:40,ownerId:null},
+    {slug:'daily',date:'2026-11-12',correct:3,total:10,durationSeconds:50,ownerId:null},
+  ];
+  const manyFree=Array.from({length:150},(_,i)=>({slug:'scienza',date:'2026-11-12',
+    correct:i%5,total:5,durationSeconds:20+i,ownerId:null}));
+  const compact=compactAttempts([...daily,...manyFree]);
+  assert.equal(compact.filter(x=>x.slug==='daily').length,3);
+  assert.equal(compact.filter(x=>x.slug!=='daily').length,100);
+  assert.equal(compact.length,103);
+  const duplicate=compactAttempts([...daily,{...daily[2],correct:9}]);
+  assert.equal(duplicate.filter(x=>x.slug==='daily').length,3);
+  assert.equal(duplicate.at(-1).correct,9);
 });
