@@ -26,14 +26,34 @@ export function beatsPreviousBest(correct:number,seconds:number,prior:QuizAttemp
 
 const STORAGE_KEY = 'quizario:quiz-attempts:v2';
 
+/** Preserve the daily streak even when the player completes many free quizzes. */
+export function compactAttempts(entries:readonly QuizAttempt[]):QuizAttempt[] {
+  const selected:QuizAttempt[]=[];
+  const seenDays=new Set<string>();
+  let freeCount=0;
+  for(let i=entries.length-1;i>=0;i--){
+    const item=entries[i];
+    if(item.slug==='daily'){
+      const key=`${item.ownerId??'guest'}:${item.date}`;
+      if(seenDays.has(key)||seenDays.size>=400)continue;
+      seenDays.add(key);
+    }else{
+      if(freeCount>=100)continue;
+      freeCount++;
+    }
+    selected.push(item);
+  }
+  return selected.reverse();
+}
+
 function readLocal(): QuizAttempt[] {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
-    return Array.isArray(value) ? value.filter(item =>
+    return Array.isArray(value) ? compactAttempts(value.filter(item =>
       typeof item?.slug === 'string' && typeof item?.date === 'string' &&
       typeof item?.correct === 'number' && typeof item?.total === 'number' &&
       typeof item?.durationSeconds === 'number'
-    ).slice(-100) : [];
+    )) : [];
   } catch { return []; }
 }
 
@@ -48,7 +68,7 @@ export class ProgressService {
   });
 
   save(attempt: QuizAttempt): void {
-    const updated = [...this.attempts(), attempt].slice(-100);
+    const updated = compactAttempts([...this.attempts(), attempt]);
     this.attempts.set(updated);
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { /* Storage blocked; session still works */ }
   }
