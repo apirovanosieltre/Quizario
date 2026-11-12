@@ -15,7 +15,7 @@
     {
       "binding": "DB",
       "database_name": "quizario-db",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "7cdc2fc4-4455-482e-b5de-f0365fa3d6e1",
       "migrations_dir": "migrations"
     }
   ],
