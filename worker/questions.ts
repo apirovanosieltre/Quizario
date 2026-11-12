@@ -129,6 +129,34 @@ async function ensureDaily(db:D1Database, day:string):Promise<string[]> {
   if((verified.results??[]).length!==10) throw new QuizError(503,'La sfida è in preparazione.');
   return (verified.results??[]).map(x=>x.id);
 }
+/** The database is the authority for logged-in daily completions, including zero-score games. */
+async function dailyStatus(env:QuizEnv,user:Player|null):Promise<Response> {
+  if(!user)throw new QuizError(401,'Accedi per vedere i risultati giornalieri del profilo.');
+  const today=romeDay();
+  const rows=await env.DB.prepare(`SELECT quiz_date,score,total,duration_seconds
+    FROM quiz_results WHERE user_id=? AND quiz_slug='daily' AND quiz_date<=?
+    ORDER BY quiz_date DESC LIMIT 400`).bind(user.id,today)
+    .all<{quiz_date:string;score:number;total:number;duration_seconds:number}>();
+  const dates=new Set((rows.results??[]).map(row=>row.quiz_date));
+  const todayResult=(rows.results??[]).find(row=>row.quiz_date===today);
+  const previousDay=(day:string):string=>{
+    const value=new Date(day+'T00:00:00Z');
+    value.setUTCDate(value.getUTCDate()-1);
+    return value.toISOString().slice(0,10);
+  };
+  let cursor=dates.has(today)?today:previousDay(today);
+  let streak=0;
+  while(dates.has(cursor)) {
+    streak++;
+    cursor=previousDay(cursor);
+  }
+  return reply({
+    today,completed:!!todayResult,score:todayResult?.score??null,
+    total:todayResult?.total??null,durationSeconds:todayResult?.duration_seconds??null,
+    streak,scope:'account',
+  });
+}
+
 async function publicQuestions(db:D1Database,sessionId:string) {
   const rows=await db.prepare(`SELECT sa.position,q.id,q.prompt,COALESCE(dq.tier_snapshot,q.effective_difficulty) AS difficulty,o.option_index,o.answer_text
     FROM quiz_session_answers sa JOIN questions q ON q.id=sa.question_id
@@ -452,6 +480,7 @@ export async function quizApi(request:Request,env:QuizEnv,user:Player|null):Prom
     const tiers=await env.DB.prepare("SELECT effective_difficulty AS tier,COUNT(*) AS total FROM questions WHERE status='published' AND language='it' GROUP BY effective_difficulty").all();
     return reply({categories:items.results??[],difficulties:tiers.results??[],today:romeDay()});
   }
+  if(path==='/api/quiz/daily/status'&&request.method==='GET')return dailyStatus(env,user);
   if(path==='/api/quiz/start'&&request.method==='POST')return start(request,env,user);
   if(path==='/api/quiz/resume'&&request.method==='POST')return resume(request,env,user);
   if(path==='/api/quiz/answer'&&request.method==='POST')return answer(request,env,user);
