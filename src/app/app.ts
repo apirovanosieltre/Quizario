@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from './core/auth.service';
 
@@ -25,6 +25,7 @@ import { AuthService } from './core/auth.service';
           </a>
         </div>
       </header>
+      @if (offline()) { <div class="connection-banner" role="status">Connessione assente. Puoi aprire Quizario, ma per giocare e verificare le risposte serve Internet.</div> }
       <main id="main-content" class="main-content"><router-outlet /></main>
       <footer class="site-footer">
         <div class="container footer-inner"><span>© {{ year }} Quizario · Versione iniziale</span>
@@ -39,8 +40,25 @@ import { AuthService } from './core/auth.service';
     </div>
   `,
 })
-export class App implements OnInit {
+export class App implements OnInit, OnDestroy {
   protected readonly auth = inject(AuthService);
   protected readonly year = new Date().getFullYear();
-  ngOnInit(): void { void this.auth.bootstrap(); }
+  protected readonly offline = signal(false);
+  private readonly onConnectionChange = ():void => {
+    if (typeof navigator !== 'undefined') this.offline.set(!navigator.onLine);
+  };
+  ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      this.onConnectionChange();
+      window.addEventListener('online', this.onConnectionChange);
+      window.addEventListener('offline', this.onConnectionChange);
+    }
+    void this.auth.bootstrap();
+  }
+  ngOnDestroy():void {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('online', this.onConnectionChange);
+      window.removeEventListener('offline', this.onConnectionChange);
+    }
+  }
 }
