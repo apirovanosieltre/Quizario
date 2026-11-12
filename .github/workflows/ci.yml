@@ -17,8 +17,10 @@ jobs:
           python-version: '3.12'
       - run: npm install --no-audit --no-fund
       - run: npm run check
+      - run: npx wrangler deploy --dry-run --outdir=.wrangler/security-ci
       - run: npm run questions:tests
       - run: npm run questions:engine-tests
       - run: npm run questions:api-tests
+      - run: npm run security:tests
       - run: npm run db:verify:tests
       - run: python tests/d1-trigger-repair.test.py

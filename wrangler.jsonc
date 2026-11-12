@@ -23,5 +23,23 @@
     "crons": [
       "10 3 * * *"
     ]
-  }
+  },
+  "ratelimits": [
+    {
+      "name": "AUTH_RATE",
+      "namespace_id": "23001",
+      "simple": {
+        "limit": 12,
+        "period": 60
+      }
+    },
+    {
+      "name": "QUIZ_RATE",
+      "namespace_id": "23002",
+      "simple": {
+        "limit": 90,
+        "period": 60
+      }
+    }
+  ]
 }
