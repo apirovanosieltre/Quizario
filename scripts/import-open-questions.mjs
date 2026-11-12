@@ -124,10 +124,16 @@ function renderSql(questions) {
     const id=`q_${contentHash.slice(0,24)}`;
     const cols=['id','content_hash','category_slug','language','prompt','explanation','selection_key','editor_difficulty','effective_difficulty','status','source_id','source_item_id','source_url','import_batch_id','verified_at'];
     const vals=[id,contentHash,q.category,q.language,q.prompt,q.explanation,parseInt(contentHash.slice(0,7),16),q.difficulty,q.difficulty,'draft',q.source,q.sourceItem,q.sourceUrl,batchKey,null];
-    out.push(`INSERT OR IGNORE INTO questions (${cols.join(',')}) VALUES (${vals.map(sql).join(',')});`);
+    // Preserve edited drafts even if a later import would produce the original text again.
+    // The source item may be used by multiple recipes, so dedupe within the recipe.
+    out.push(`INSERT OR IGNORE INTO questions (${cols.join(',')}) SELECT ${vals.map(sql).join(',')}
+  WHERE NOT EXISTS (SELECT 1 FROM questions existing
+    LEFT JOIN import_batches batch ON batch.id=existing.import_batch_id
+    WHERE existing.source_id=${sql(q.source)} AND existing.source_item_id=${sql(q.sourceItem)}
+      AND batch.recipe=${sql(dataset)});`);
     q.options.forEach((choice,index)=>out.push(`INSERT OR IGNORE INTO question_options(question_id,option_index,answer_text,is_correct)
   SELECT ${sql(id)},${index},${sql(choice.text)},${choice.correct?1:0}
-  WHERE EXISTS (SELECT 1 FROM questions WHERE id=${sql(id)} AND status='draft');`));
+  WHERE EXISTS (SELECT 1 FROM questions WHERE id=${sql(id)} AND status='draft' AND content_hash=${sql(contentHash)});`));
   }
   return out.join('\n')+'\n';
 }
