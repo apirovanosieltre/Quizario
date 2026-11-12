@@ -189,7 +189,9 @@ async function start(request:Request,env:QuizEnv,user:Player|null):Promise<Respo
       throw new QuizError(409,'La sfida giornaliera è già stata avviata da questo account.');
     throw e;
   }
-  return reply({ sessionToken:token, mode, date:mode==='daily'?day:null, questions:await publicQuestions(env.DB,sessionId), nextPosition:1, score:0 });
+  return reply({ sessionToken:token, mode, date:mode==='daily'?day:null,
+    difficulty:mode==='daily'?null:difficulty,
+    questions:await publicQuestions(env.DB,sessionId), nextPosition:1, score:0 });
 }
 async function getSession(db:D1Database,token:unknown,user:Player|null):Promise<PlayRow>{
   const hash=await digest(requireString(token,'Sessione',64));
@@ -219,7 +221,9 @@ async function resume(request:Request,env:QuizEnv,user:Player|null):Promise<Resp
   const total=await env.DB.prepare('SELECT COUNT(*) AS total FROM quiz_session_answers WHERE session_id=?').bind(found.id).first<{total:number}>();
   const completed=!!found.completed_at || ((total?.total??0)>0 && status?.answered===total?.total);
   const review=completed?await completedReview(env.DB,found.id):undefined;
-  return reply({sessionToken:token,mode:found.mode,date:found.quiz_date,questions:await publicQuestions(env.DB,found.id),
+  return reply({sessionToken:token,mode:found.mode,date:found.quiz_date,
+    difficulty:found.mode==='daily'?null:found.requested_difficulty,
+    questions:await publicQuestions(env.DB,found.id),
     nextPosition:(status?.answered??0)+1,score:status?.score??0,completed,
     ...(completed?{review,durationSeconds:completedDuration(found.started_at,found.completed_at)}:{})});
 }
