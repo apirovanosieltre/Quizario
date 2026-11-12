@@ -20,3 +20,4 @@ jobs:
       - run: npm run questions:tests
       - run: npm run questions:engine-tests
       - run: npm run questions:api-tests
+      - run: npm run db:verify:tests

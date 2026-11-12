@@ -108,3 +108,7 @@ Le API account (`/api/auth/register`, `/api/auth/login`, `/api/auth/me`, `/api/a
 - `wrangler.jsonc` contiene l'UUID D1 segnaposto. Le variabili in `.dev.vars` e i segreti non sono inclusi nello ZIP.
 
 Ulteriori dettagli su licenze e importazioni: [`docs/QUESTION_BANK_IT.md`](docs/QUESTION_BANK_IT.md). Tutte le modifiche sono **solo nei file consegnati**, non su GitHub e non su Cloudflare.
+
+## Cloudflare D1 remoto e importazioni sicure
+
+Consulta [`docs/CLOUDFLARE_D1_IT.md`](docs/CLOUDFLARE_D1_IT.md). Sono disponibili: controllo dello schema remoto di sola lettura, generazione settimanale di bozze da Wikidata senza scrivere in D1 e importazione manuale di lotti limitati (tutti in stato `draft`). **Nessun deploy pubblico automatico**.

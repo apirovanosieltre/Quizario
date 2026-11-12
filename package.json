@@ -20,7 +20,9 @@
     "questions:qa:prepare": "node scripts/seed-qa-only.mjs --ack-local-only",
     "questions:qa:local": "wrangler d1 execute DB --local --file imports/qa-only-local.sql",
     "questions:engine-tests": "python tests/quiz-engine.test.py",
-    "questions:api-tests": "node tests/quiz-api.test.mjs"
+    "questions:api-tests": "node tests/quiz-api.test.mjs",
+    "db:verify:remote": "node scripts/verify-cloudflare-d1.mjs",
+    "db:verify:tests": "node --test tests/d1-schema.test.mjs"
   },
   "engines": {
     "node": ">=22.22.3"
