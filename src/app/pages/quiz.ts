@@ -1,6 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DailyProgressService } from '../core/daily-progress.service';
+import { AuthService } from '../core/auth.service';
 import { bestComparableAttempt, beatsPreviousBest, ProgressService, type QuizAttempt } from '../core/progress.service';
 import { apiErrorMessage } from '../core/errors';
 import { Difficulty, QuizAnswer, QuizApiService, QuizSession, type QuizReview } from '../core/quiz-api.service';
@@ -39,8 +41,32 @@ import { CATEGORY_STYLES } from '../data/categories';
           <button class="button button-primary full-button" type="button" (click)="start()">Comincia la partita →</button>
         </div>
       } @else if (!session() && isDaily) {
-        <div class="question-card"><h2>La sfida non è disponibile</h2><p>{{error() || 'Non è stato possibile caricare le domande.'}}</p>
-          <button class="button button-primary" type="button" (click)="start()">Riprova</button></div>
+        @if (daily.current()?.completed) {
+          <div class="result-card daily-already-completed" role="status">
+            <div class="daily-done-icon" aria-hidden="true">✓</div>
+            <div class="eyebrow secondary">SFIDA DEL GIORNO COMPLETATA</div>
+            <h2>Ottimo, per oggi hai finito!</h2>
+            <p>Il quiz giornaliero si rinnova domani. Nel frattempo hai altri quiz da esplorare.</p>
+            <div class="daily-completed-metrics">
+              <div><span>Risultato di oggi</span><strong>{{daily.current()?.score}}/{{daily.current()?.total}}</strong></div>
+              <div><span>Streak attuale</span><strong>🔥 {{daily.current()?.streak}} {{daily.current()?.streak===1?'giorno':'giorni'}}</strong></div>
+            </div>
+            <p class="daily-scope-note">{{daily.current()?.scope==='account'?'Risultato verificato e conservato nel profilo.':'Risultato conservato su questo dispositivo.'}}</p>
+            <a class="button button-primary" routerLink="/" fragment="categorie">Scopri gli altri quiz ↗</a>
+            <a class="daily-return-home" routerLink="/">Torna alla homepage</a>
+          </div>
+        } @else if (daily.error()) {
+          <div class="question-card"><h2>Impossibile verificare la sfida</h2>
+            <p>{{daily.error()}}</p><button class="button button-primary" type="button" (click)="retryDaily()">Riprova verifica</button>
+          </div>
+        } @else if (daily.current()) {
+          <div class="question-card"><h2>La sfida non è disponibile</h2><p>{{error() || 'Non è stato possibile caricare le domande.'}}</p>
+            <button class="button button-primary" type="button" (click)="start()">Riprova</button>
+            <a class="button button-ghost" routerLink="/" fragment="categorie">Prova un altro quiz</a>
+          </div>
+        } @else {
+          <div class="question-card"><p role="status">Verifica del risultato giornaliero in corso…</p></div>
+        }
       } @else if (session(); as game) {
         @if (!finished()) {
           <div class="question-card">
@@ -95,11 +121,24 @@ import { CATEGORY_STYLES } from '../data/categories';
             } @else {
               <p class="result-record-secondary">Primo risultato registrato su questo dispositivo per questa modalità.</p>
             }
+            @if (isDaily) {
+              <div class="daily-result-streak" role="status">
+                <strong>✓ Sfida giornaliera completata</strong>
+                @if (daily.current()?.completed) {
+                  <span>🔥 {{daily.current()?.streak}} {{daily.current()?.streak===1?'giorno':'giorni'}} di streak</span>
+                } @else {
+                  <span>La tua streak viene aggiornata…</span>
+                }
+                <small>Domani ti aspetta una nuova sfida. Intanto puoi continuare a giocare!</small>
+              </div>
+            }
             <div class="result-actions">
               @if (!isDaily) {
                 <button class="button button-primary" type="button" (click)="restart()">Gioca ancora ↻</button>
+                <a class="button button-ghost" routerLink="/" fragment="categorie">Esplora altri quiz ↗</a>
+              } @else {
+                <a class="button button-primary" routerLink="/" fragment="categorie">Prova altri quiz ↗</a>
               }
-              <a class="button button-ghost" routerLink="/">Esplora altri quiz ↗</a>
               <button class="button button-ghost" type="button" (click)="shareResult()">Condividi risultato</button>
             </div>
             @if (shareStatus()) {<p role="status" class="result-share-status">{{shareStatus()}}</p>}
@@ -149,6 +188,8 @@ export class QuizPage implements OnInit {
   private readonly route=inject(ActivatedRoute);
   private readonly api=inject(QuizApiService);
   private readonly progress=inject(ProgressService);
+  private readonly auth=inject(AuthService);
+  protected readonly daily=inject(DailyProgressService);
   protected readonly slug=this.route.snapshot.paramMap.get('slug')??'';
   protected readonly isDaily=this.slug==='daily';
   private readonly metadata=CATEGORY_STYLES.find(x=>x.slug===this.slug);
@@ -237,6 +278,7 @@ export class QuizPage implements OnInit {
     try{sessionStorage.setItem(this.storageKey,session.sessionToken);}catch{/* storage disabled */}
   }
   private async restore(){
+    if(this.isDaily) await this.daily.refresh();
     let token:string|null=null;
     try{token=sessionStorage.getItem(this.storageKey);}catch{/* disabled */}
     if(token){
@@ -246,6 +288,7 @@ export class QuizPage implements OnInit {
       finally{this.loading.set(false);}
     }
     if(this.isDaily){
+      if(this.daily.error() || this.daily.current()?.completed) return;
       this.loading.set(true);
       try {this.setSession(await this.api.resume());return;}
       catch(e){
@@ -257,8 +300,12 @@ export class QuizPage implements OnInit {
       await this.start();
     }
   }
+  protected async retryDaily():Promise<void>{
+    await this.daily.refresh();
+    if(!this.daily.error() && !this.daily.current()?.completed)await this.restore();
+  }
   protected async start(){
-    if(this.loading())return;
+    if(this.loading() || (this.isDaily && (!this.daily.current() || this.daily.current()?.completed)))return;
     this.loading.set(true);this.error.set('');
     try{this.setSession(await this.api.start(this.isDaily?'daily':'free',this.isDaily?null:this.slug,this.difficulty(),this.count()));}
     catch(e){this.error.set(apiErrorMessage(e));}
@@ -281,7 +328,8 @@ export class QuizPage implements OnInit {
         this.newRecord.set(beatsPreviousBest(result.score,seconds,previous));
         // Persist immediately, even if the player closes the tab before opening results.
         this.progress.save({slug:this.slug,date:this.romeDay(),correct:result.score,
-          total:result.total,durationSeconds:seconds,difficulty});
+          total:result.total,durationSeconds:seconds,difficulty,ownerId:this.auth.user()?.id??null});
+        if(this.isDaily)void this.daily.refresh();
       }
     }catch(e){this.error.set(apiErrorMessage(e));}
     finally{this.busy.set(false);}
