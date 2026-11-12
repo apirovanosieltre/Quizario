@@ -115,3 +115,7 @@ Consulta [`docs/CLOUDFLARE_D1_IT.md`](docs/CLOUDFLARE_D1_IT.md). Sono disponibil
 ## Sicurezza pre-lancio (v0.4)
 
 Sono stati aggiunti rate limiting Workers, Turnstile obbligatorio per la registrazione e il recupero password, link di reset firmati, e nuova bozza dell'informativa privacy. **La registrazione rimane disabilitata finché non sono configurati i secrets Cloudflare. Non eseguire un deploy pubblico prima di aver finalizzato l'informativa e collaudato i flussi.** Configurazione e test: [`docs/SECURITY_LAUNCH_IT.md`](docs/SECURITY_LAUNCH_IT.md).
+
+## Prime 30 domande pilota (Geografia + Scienza)
+
+30 domande editoriali con fonti Wikidata e IUPAC, 5 per categoria/difficoltà; lo script SQL idempotente viene validato in SQLite. **Al merge sul branch `main`, il workflow `Publish first 30 Quizario questions (one-off pilot)` pubblica il lotto su Cloudflare D1** utilizzando l'ambiente GitHub `Environments`, senza deploy del Worker. Nessuna domanda QA locale viene utilizzata. Dettagli, verifiche e rischi: [`docs/PILOT_QUESTIONS_IT.md`](docs/PILOT_QUESTIONS_IT.md).

@@ -1,0 +1,516 @@
+{
+  "version": 1,
+  "reviewDate": "2026-11-12",
+  "questions": [
+    {
+      "id": "G01",
+      "category": "geografia",
+      "difficulty": "easy",
+      "prompt": "Qual è la capitale dell'Italia?",
+      "explanation": "La capitale dell'Italia è Roma.",
+      "options": [
+        "Milano",
+        "Torino",
+        "Roma",
+        "Napoli"
+      ],
+      "correctIndex": 2,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q38",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q38"
+    },
+    {
+      "id": "G02",
+      "category": "geografia",
+      "difficulty": "easy",
+      "prompt": "Qual è la capitale della Francia?",
+      "explanation": "La capitale della Francia è Parigi.",
+      "options": [
+        "Lione",
+        "Parigi",
+        "Marsiglia",
+        "Bordeaux"
+      ],
+      "correctIndex": 1,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q142",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q142"
+    },
+    {
+      "id": "G03",
+      "category": "geografia",
+      "difficulty": "easy",
+      "prompt": "Qual è la capitale della Germania?",
+      "explanation": "La capitale della Germania è Berlino.",
+      "options": [
+        "Amburgo",
+        "Monaco di Baviera",
+        "Francoforte",
+        "Berlino"
+      ],
+      "correctIndex": 3,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q183",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q183"
+    },
+    {
+      "id": "G04",
+      "category": "geografia",
+      "difficulty": "easy",
+      "prompt": "Qual è la capitale della Spagna?",
+      "explanation": "La capitale della Spagna è Madrid.",
+      "options": [
+        "Madrid",
+        "Barcellona",
+        "Valencia",
+        "Siviglia"
+      ],
+      "correctIndex": 0,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q29",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q29"
+    },
+    {
+      "id": "G05",
+      "category": "geografia",
+      "difficulty": "easy",
+      "prompt": "Qual è la capitale del Giappone?",
+      "explanation": "La capitale del Giappone è Tokyo.",
+      "options": [
+        "Osaka",
+        "Kyoto",
+        "Tokyo",
+        "Nagoya"
+      ],
+      "correctIndex": 2,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q17",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q17"
+    },
+    {
+      "id": "G06",
+      "category": "geografia",
+      "difficulty": "medium",
+      "prompt": "Qual è la capitale del Canada?",
+      "explanation": "La capitale del Canada è Ottawa.",
+      "options": [
+        "Toronto",
+        "Ottawa",
+        "Vancouver",
+        "Montréal"
+      ],
+      "correctIndex": 1,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q16",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q16"
+    },
+    {
+      "id": "G07",
+      "category": "geografia",
+      "difficulty": "medium",
+      "prompt": "Qual è la capitale del Brasile?",
+      "explanation": "La capitale del Brasile è Brasilia.",
+      "options": [
+        "Rio de Janeiro",
+        "San Paolo",
+        "Salvador",
+        "Brasilia"
+      ],
+      "correctIndex": 3,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q155",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q155"
+    },
+    {
+      "id": "G08",
+      "category": "geografia",
+      "difficulty": "medium",
+      "prompt": "Qual è la capitale del Portogallo?",
+      "explanation": "La capitale del Portogallo è Lisbona.",
+      "options": [
+        "Lisbona",
+        "Porto",
+        "Coimbra",
+        "Braga"
+      ],
+      "correctIndex": 0,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q45",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q45"
+    },
+    {
+      "id": "G09",
+      "category": "geografia",
+      "difficulty": "medium",
+      "prompt": "Qual è la capitale dell'Austria?",
+      "explanation": "La capitale dell'Austria è Vienna.",
+      "options": [
+        "Salisburgo",
+        "Graz",
+        "Vienna",
+        "Innsbruck"
+      ],
+      "correctIndex": 2,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q40",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q40"
+    },
+    {
+      "id": "G10",
+      "category": "geografia",
+      "difficulty": "medium",
+      "prompt": "Qual è la capitale dell'India?",
+      "explanation": "La capitale dell'India è Nuova Delhi.",
+      "options": [
+        "Mumbai",
+        "Nuova Delhi",
+        "Calcutta",
+        "Chennai"
+      ],
+      "correctIndex": 1,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q668",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q668"
+    },
+    {
+      "id": "G11",
+      "category": "geografia",
+      "difficulty": "hard",
+      "prompt": "Qual è la capitale dell'Australia?",
+      "explanation": "La capitale dell'Australia è Canberra.",
+      "options": [
+        "Sydney",
+        "Melbourne",
+        "Perth",
+        "Canberra"
+      ],
+      "correctIndex": 3,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q408",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q408"
+    },
+    {
+      "id": "G12",
+      "category": "geografia",
+      "difficulty": "hard",
+      "prompt": "Qual è la capitale dell'Islanda?",
+      "explanation": "La capitale dell'Islanda è Reykjavík.",
+      "options": [
+        "Akureyri",
+        "Reykjavík",
+        "Hafnarfjörður",
+        "Keflavík"
+      ],
+      "correctIndex": 1,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q189",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q189"
+    },
+    {
+      "id": "G13",
+      "category": "geografia",
+      "difficulty": "hard",
+      "prompt": "Qual è la capitale del Kenya?",
+      "explanation": "La capitale del Kenya è Nairobi.",
+      "options": [
+        "Mombasa",
+        "Kisumu",
+        "Nakuru",
+        "Nairobi"
+      ],
+      "correctIndex": 3,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q114",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q114"
+    },
+    {
+      "id": "G14",
+      "category": "geografia",
+      "difficulty": "hard",
+      "prompt": "Qual è la capitale del Marocco?",
+      "explanation": "La capitale del Marocco è Rabat.",
+      "options": [
+        "Rabat",
+        "Casablanca",
+        "Marrakech",
+        "Fès"
+      ],
+      "correctIndex": 0,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q1028",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q1028"
+    },
+    {
+      "id": "G15",
+      "category": "geografia",
+      "difficulty": "hard",
+      "prompt": "Qual è la capitale della Mongolia?",
+      "explanation": "La capitale della Mongolia è Ulan Bator.",
+      "options": [
+        "Erdenet",
+        "Darkhan",
+        "Ulan Bator",
+        "Choibalsan"
+      ],
+      "correctIndex": 2,
+      "sourceId": "wikidata",
+      "sourceItemId": "Q711",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q711"
+    },
+    {
+      "id": "S01",
+      "category": "scienza",
+      "difficulty": "easy",
+      "prompt": "Quale elemento chimico è indicato dal simbolo H?",
+      "explanation": "Il simbolo H identifica l’idrogeno, che ha numero atomico 1.",
+      "options": [
+        "Idrogeno",
+        "Elio",
+        "Azoto",
+        "Ossigeno"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-H",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S02",
+      "category": "scienza",
+      "difficulty": "easy",
+      "prompt": "Quale elemento chimico è indicato dal simbolo O?",
+      "explanation": "Il simbolo O appartiene all’ossigeno, elemento con numero atomico 8.",
+      "options": [
+        "Azoto",
+        "Ossigeno",
+        "Fluoro",
+        "Carbonio"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-O",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S03",
+      "category": "scienza",
+      "difficulty": "easy",
+      "prompt": "Quale elemento chimico ha numero atomico 6?",
+      "explanation": "Il carbonio è l’elemento numero 6 nella tavola periodica.",
+      "options": [
+        "Azoto",
+        "Silicio",
+        "Carbonio",
+        "Boro"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-6",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S04",
+      "category": "scienza",
+      "difficulty": "easy",
+      "prompt": "Quale elemento chimico è indicato dal simbolo Fe?",
+      "explanation": "Fe è il simbolo chimico del ferro, elemento con numero atomico 26.",
+      "options": [
+        "Rame",
+        "Zinco",
+        "Nichel",
+        "Ferro"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-Fe",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S05",
+      "category": "scienza",
+      "difficulty": "easy",
+      "prompt": "Quale elemento chimico è indicato dal simbolo Au?",
+      "explanation": "Au è il simbolo chimico dell’oro, elemento con numero atomico 79.",
+      "options": [
+        "Oro",
+        "Argento",
+        "Rame",
+        "Alluminio"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-Au",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S06",
+      "category": "scienza",
+      "difficulty": "medium",
+      "prompt": "Quale elemento chimico ha numero atomico 11?",
+      "explanation": "Il sodio è l’elemento numero 11, indicato dal simbolo Na.",
+      "options": [
+        "Potassio",
+        "Sodio",
+        "Magnesio",
+        "Calcio"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-11",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S07",
+      "category": "scienza",
+      "difficulty": "medium",
+      "prompt": "Quale elemento chimico è indicato dal simbolo Si?",
+      "explanation": "Si è il simbolo del silicio, elemento con numero atomico 14.",
+      "options": [
+        "Zolfo",
+        "Fluoro",
+        "Silicio",
+        "Fosforo"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-Si",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S08",
+      "category": "scienza",
+      "difficulty": "medium",
+      "prompt": "Quale elemento chimico ha numero atomico 20?",
+      "explanation": "Il calcio ha numero atomico 20 e simbolo Ca.",
+      "options": [
+        "Magnesio",
+        "Potassio",
+        "Zinco",
+        "Calcio"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-20",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S09",
+      "category": "scienza",
+      "difficulty": "medium",
+      "prompt": "Quale elemento chimico è indicato dal simbolo Cu?",
+      "explanation": "Cu è il simbolo del rame, elemento con numero atomico 29.",
+      "options": [
+        "Rame",
+        "Cobalto",
+        "Cromo",
+        "Calcio"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-Cu",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S10",
+      "category": "scienza",
+      "difficulty": "medium",
+      "prompt": "Quale elemento chimico ha numero atomico 17?",
+      "explanation": "Il cloro ha numero atomico 17 e simbolo Cl.",
+      "options": [
+        "Fluoro",
+        "Cloro",
+        "Zolfo",
+        "Argon"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-17",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S11",
+      "category": "scienza",
+      "difficulty": "hard",
+      "prompt": "Quale elemento chimico è indicato dal simbolo Sb?",
+      "explanation": "Sb è il simbolo dell’antimonio, elemento con numero atomico 51.",
+      "options": [
+        "Stagno",
+        "Bismuto",
+        "Antimonio",
+        "Tellurio"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-Sb",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S12",
+      "category": "scienza",
+      "difficulty": "hard",
+      "prompt": "Quale elemento chimico ha numero atomico 24?",
+      "explanation": "Il cromo ha numero atomico 24 e simbolo Cr.",
+      "options": [
+        "Cobalto",
+        "Nichel",
+        "Manganese",
+        "Cromo"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-24",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S13",
+      "category": "scienza",
+      "difficulty": "hard",
+      "prompt": "Quale elemento chimico è indicato dal simbolo Sn?",
+      "explanation": "Sn è il simbolo dello stagno, elemento con numero atomico 50.",
+      "options": [
+        "Stagno",
+        "Antimonio",
+        "Zinco",
+        "Stronzio"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-Sn",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S14",
+      "category": "scienza",
+      "difficulty": "hard",
+      "prompt": "Quale elemento chimico ha numero atomico 54?",
+      "explanation": "Lo xeno ha numero atomico 54 e simbolo Xe.",
+      "options": [
+        "Kripton",
+        "Xeno",
+        "Radon",
+        "Argon"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-54",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    },
+    {
+      "id": "S15",
+      "category": "scienza",
+      "difficulty": "hard",
+      "prompt": "Quale elemento chimico è indicato dal simbolo W?",
+      "explanation": "W è il simbolo del tungsteno, detto anche wolframio, elemento numero 74.",
+      "options": [
+        "Molibdeno",
+        "Titanio",
+        "Tungsteno",
+        "Vanadio"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-iupac",
+      "sourceItemId": "iupac-W",
+      "sourceUrl": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    }
+  ]
+}
