@@ -8,6 +8,8 @@ export interface QuizAttempt {
   durationSeconds: number;
   /** Free-mode tier, or 'daily'. Older locally stored entries may have no tier. */
   difficulty?: string;
+  /** Null for guests; account id for signed-in attempts. Older entries have no owner. */
+  ownerId?: string|null;
 }
 /** Compare only equivalent quizzes. A faster time breaks a tie in score. */
 export function bestComparableAttempt(
