@@ -161,7 +161,7 @@ async function issueSession(user: UserRow, env: Env, status = 200): Promise<Resp
   return json({ user: asUser(user) }, status, createCookie(token));
 }
 
-async function api(request: Request, env: Env): Promise<Response> {
+async function api(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const pathname = new URL(request.url).pathname;
   if (pathname === '/api/health' && request.method === 'GET') return json({ ok: true, service: 'quizario' });
   checkOrigin(request);
@@ -180,6 +180,8 @@ async function api(request: Request, env: Env): Promise<Response> {
   } else if ((pathname.startsWith('/api/auth/') && request.method === 'POST') ||
              (pathname === '/api/account' && request.method !== 'GET')) {
     await enforceRateLimit(env, request, 'auth');
+  } else if ((pathname === '/api/auth/me' || pathname === '/api/account/results') && request.method === 'GET') {
+    await enforceRateLimit(env, request, 'quiz');
   }
 
   if (pathname.startsWith('/api/quiz/') || pathname.startsWith('/api/admin/')) {
@@ -232,8 +234,13 @@ async function api(request: Request, env: Env): Promise<Response> {
       .first<Pick<UserRow,'id'|'password_hash'>>();
     if (user) {
       const token = await createResetToken(env.PASSWORD_RESET_SECRET!, user);
-      try { await sendResetEmail(env, email, token); }
-      catch { console.error('Password reset delivery failure'); }
+      // Do not delay this generic response for an existing address only.
+      ctx.waitUntil(sendResetEmail(env, email, token).catch(() => {
+        console.error('Password reset delivery failure');
+      }));
+    } else {
+      // Approximately equalize the crypto work without sending any email.
+      await createResetToken(env.PASSWORD_RESET_SECRET!, {id:crypto.randomUUID(),password_hash:'nonexistent-account'});
     }
     // Never reveal whether this email is associated with an account.
     return json({ok:true, message:'Se l’indirizzo è registrato, riceverai le istruzioni via email.'});
@@ -303,9 +310,9 @@ export default {
   scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext) {
     ctx.waitUntil(runMaintenance(env.DB));
   },
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     if (!new URL(request.url).pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
-    try { return await api(request, env); }
+    try { return await api(request, env, ctx); }
     catch (error) {
       if (error instanceof ApiError || error instanceof QuizError || error instanceof SecurityError) return json({ error: error.message }, error.status);
       // Avoid leaking SQL, credentials, or internal error details to clients.
