@@ -18,6 +18,9 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npm run check
       - run: npx wrangler deploy --dry-run --outdir=.wrangler/security-ci
+      - run: node scripts/import-open-questions.mjs --dataset=currencies --limit=5 --fixture=examples/wikidata-currencies-fixture.json --output=imports/ci-currencies.sql
+      - run: node scripts/import-open-questions.mjs --dataset=symbols --limit=5 --fixture=examples/wikidata-symbols-fixture.json --output=imports/ci-symbols.sql
+      - run: node --input-type=module -e "import{readFileSync}from'node:fs';for(const f of ['imports/ci-currencies.sql','imports/ci-symbols.sql']){const s=readFileSync(f,'utf8');if((s.match(/INSERT OR IGNORE INTO questions /g)||[]).length!==5||!s.includes(\"'draft'\"))throw Error('Draft dataset QA failed '+f)}"
       - run: npm run questions:tests
       - run: npm run questions:engine-tests
       - run: npm run questions:api-tests
