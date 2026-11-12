@@ -40,7 +40,7 @@ import { apiErrorMessage } from '../core/errors';
     <section class="container today-section"><div class="today-card" [class.today-completed]="daily.current()?.completed">
       <div class="today-icon" aria-hidden="true">{{daily.current()?.completed?'✓':'◈'}}</div>
       <div class="today-text">
-        @if (daily.current()?.completed; as done) {
+        @if (daily.current()?.completed) {
           <div class="small-label">✓ COMPLETATA OGGI · {{daily.current()?.today}}</div>
           <h2>La sfida è conclusa: {{daily.current()?.score}}/{{daily.current()?.total}}</h2>
           <p>🔥 {{daily.current()?.streak}} {{daily.current()?.streak===1?'giorno':'giorni'}} di streak · Torna domani per una nuova sfida.</p>
