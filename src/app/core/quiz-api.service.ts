@@ -23,6 +23,7 @@ export interface QuizSession {
   sessionToken:string;
   mode:QuizMode;
   date:string|null;
+  difficulty?:Difficulty|null;
   questions:PublicQuestion[];
   nextPosition:number;
   score:number;
