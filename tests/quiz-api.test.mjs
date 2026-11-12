@@ -69,8 +69,12 @@ try{
   const day1=await api('/api/quiz/start','POST',{mode:'daily'});assert.equal(day1.status,200);assert.equal(day1.questions.length,10);
   assert.deepEqual(day1.questions.map(x=>x.difficulty),['easy','easy','easy','medium','medium','medium','medium','hard','hard','hard']);
   const day2=await api('/api/quiz/start','POST',{mode:'daily'});assert.deepEqual(day1.questions,day2.questions);log('daily snapshots identical for guests');
+  const guestDailyStatus=await api('/api/quiz/daily/status');assert.equal(guestDailyStatus.status,401);
   const user={id:'u-api',email:'player@test.example'};
   await DB.prepare("INSERT INTO users(id,nickname,email,password_hash,password_salt,password_iterations,created_at,updated_at) VALUES('u-api','Utente','player@test.example','hash','salt',210000,datetime('now'),datetime('now'))").run();
+  const dailyBefore=await api('/api/quiz/daily/status','GET',undefined,user);
+  assert.equal(dailyBefore.status,200);assert.equal(dailyBefore.completed,false);
+  assert.equal(dailyBefore.streak,0);assert.equal(dailyBefore.scope,'account');
   const userDaily=await api('/api/quiz/start','POST',{mode:'daily'},user);assert.equal(userDaily.status,200);
   const repeat=await api('/api/quiz/start','POST',{mode:'daily'},user);assert.equal(repeat.status,409);
   const restored=await api('/api/quiz/resume','POST',{},user);assert.equal(restored.status,200);log('one authenticated daily attempt and restore by cookie');
@@ -80,6 +84,27 @@ try{
     const answer=await api('/api/quiz/answer','POST',{sessionToken:restored.sessionToken,position,optionIndex:0},user);
     assert.equal(answer.status,200);
   }
+  const completedDaily=await api('/api/quiz/daily/status','GET',undefined,user);
+  assert.equal(completedDaily.status,200);assert.equal(completedDaily.completed,true);
+  assert.equal(completedDaily.today,catalogue.today);
+  assert.equal(completedDaily.total,10);assert.ok(completedDaily.score>=0);
+  assert.ok(completedDaily.durationSeconds>=1);assert.equal(completedDaily.streak,1);
+  // Streak uses consecutive calendar days, not correct answers; a zero-score day counts.
+  const dateBefore=(day)=>new Date(Date.parse(day+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+  const yesterday=dateBefore(catalogue.today),twoDaysAgo=dateBefore(yesterday),fourDaysAgo=dateBefore(dateBefore(twoDaysAgo));
+  for(const date of [yesterday,twoDaysAgo,fourDaysAgo]){
+    await DB.prepare(`INSERT INTO quiz_results(user_id,quiz_date,quiz_slug,score,total,duration_seconds,completed_at)
+      VALUES(?,?,'daily',0,10,55,?)`).bind(user.id,date,date+'T12:00:00Z').run();
+  }
+  const threeDayStreak=await api('/api/quiz/daily/status','GET',undefined,user);
+  assert.equal(threeDayStreak.streak,3);assert.equal(threeDayStreak.score,completedDaily.score);
+  const otherUser={id:'inactive-player',email:'inactive@test.example'};
+  await DB.prepare("INSERT INTO users(id,nickname,email,password_hash,password_salt,password_iterations,created_at,updated_at) VALUES('inactive-player','Inactive','inactive@test.example','hash','salt',210000,datetime('now'),datetime('now'))").run();
+  await DB.prepare(`INSERT INTO quiz_results(user_id,quiz_date,quiz_slug,score,total,duration_seconds,completed_at)
+    VALUES(?,?,'daily',0,10,66,?)`).bind(otherUser.id,twoDaysAgo,twoDaysAgo+'T12:00:00Z').run();
+  const brokenStreak=await api('/api/quiz/daily/status','GET',undefined,otherUser);
+  assert.equal(brokenStreak.completed,false);assert.equal(brokenStreak.streak,0);
+  log('daily score and consecutive streak come from authenticated D1 rows');
   const rated=await DB.prepare('SELECT COUNT(*) AS total FROM question_rating_dedupe').first();assert.equal(rated.total,10);
   const results=await DB.prepare("SELECT score,total FROM quiz_results WHERE user_id='u-api' AND quiz_slug='daily'").first();assert.equal(results.total,10);log('rating dedupe and account results saved');
   const completedAgain=await api('/api/quiz/start','POST',{mode:'daily'},user);assert.equal(completedAgain.status,409);log('completed daily cannot be replayed');
