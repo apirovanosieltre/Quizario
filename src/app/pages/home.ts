@@ -21,6 +21,8 @@ import { apiErrorMessage } from '../core/errors';
             <a class="button button-primary" routerLink="/quiz/daily">✓ Sfida completata · {{daily.current()?.score}}/{{daily.current()?.total}}</a>
           } @else if (daily.current()) {
             <a class="button button-primary" routerLink="/quiz/daily">Sfida di oggi <span aria-hidden="true">↗</span></a>
+          } @else if (daily.error()) {
+            <button class="button button-primary" type="button" (click)="daily.refresh()">Aggiorna stato sfida</button>
           } @else {
             <span class="button button-primary daily-button-loading" role="status">Caricamento sfida…</span>
           }
@@ -52,6 +54,10 @@ import { apiErrorMessage } from '../core/errors';
           @if (daily.current()?.streak) {
             <p class="today-streak-hint">🔥 Streak di {{daily.current()?.streak}} {{daily.current()?.streak===1?'giorno':'giorni'}}: gioca oggi per continuarla.</p>
           }
+        } @else if (daily.error()) {
+          <div class="small-label">LA SFIDA DI OGGI</div>
+          <h2>Stato da verificare</h2>
+          <p>Non siamo riusciti a recuperare il tuo risultato. Puoi riprovare.</p>
         } @else {
           <div class="small-label">LA SFIDA DI OGGI</div>
           <h2>Prepariamo il tuo risultato…</h2>
@@ -64,6 +70,8 @@ import { apiErrorMessage } from '../core/errors';
           <a class="today-review-link" routerLink="/quiz/daily">Vedi risultato di oggi</a>
         } @else if (daily.current()) {
           <a class="button button-light" routerLink="/quiz/daily">Gioca ora ↗</a>
+        } @else if (daily.error()) {
+          <button class="button button-light" type="button" (click)="daily.refresh()">Riprova verifica ↻</button>
         } @else {
           <span class="button button-light daily-button-loading" role="status">Caricamento…</span>
         }
