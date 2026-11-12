@@ -75,6 +75,27 @@ interface PlayRow {
   category_slug:string|null; requested_difficulty:string|null;
   started_at:string; expires_at:string; completed_at:string|null;
 }
+interface ReviewRow {
+  position:number; question_id:string; selected_option_index:number;
+  correct_option_index:number; is_correct:number; explanation:string|null;
+}
+/** Never expose the answer key until all answers have been submitted. */
+async function completedReview(db:D1Database, sessionId:string):Promise<ReviewRow[]> {
+  const rows=await db.prepare(`SELECT sa.position,sa.question_id,sa.selected_option_index,sa.is_correct,
+      correct.option_index AS correct_option_index,q.explanation
+    FROM quiz_session_answers sa
+    JOIN questions q ON q.id=sa.question_id
+    JOIN question_options correct ON correct.question_id=sa.question_id AND correct.is_correct=1
+    WHERE sa.session_id=? AND sa.selected_option_index IS NOT NULL
+    ORDER BY sa.position`).bind(sessionId).all<ReviewRow>();
+  return rows.results??[];
+}
+function completedDuration(startedAt:string, completedAt:string|null=null):number {
+  const utc=(value:string)=>value.includes('T')?value:value.replace(' ','T')+'Z';
+  const start=Date.parse(utc(startedAt));
+  const end=completedAt?Date.parse(utc(completedAt)):Date.now();
+  return Number.isFinite(start)&&Number.isFinite(end)?Math.max(1,Math.round((end-start)/1000)):1;
+}
 async function selectQuestions(db:D1Database, count:number, category:string|null, difficulty:string|null, seed:string):Promise<string[]> {
   // Indexed range scan with one wraparound, not ORDER BY RANDOM() over the full question bank.
   const pivot=hashSelection(seed)%2147483648;
@@ -196,9 +217,11 @@ async function resume(request:Request,env:QuizEnv,user:Player|null):Promise<Resp
   const status=await env.DB.prepare(`SELECT COUNT(*) AS answered,COALESCE(SUM(CASE WHEN is_correct=1 THEN 1 ELSE 0 END),0) AS score
     FROM quiz_session_answers WHERE session_id=? AND selected_option_index IS NOT NULL`).bind(found.id).first<{answered:number;score:number}>();
   const total=await env.DB.prepare('SELECT COUNT(*) AS total FROM quiz_session_answers WHERE session_id=?').bind(found.id).first<{total:number}>();
+  const completed=!!found.completed_at || ((total?.total??0)>0 && status?.answered===total?.total);
+  const review=completed?await completedReview(env.DB,found.id):undefined;
   return reply({sessionToken:token,mode:found.mode,date:found.quiz_date,questions:await publicQuestions(env.DB,found.id),
-    nextPosition:(status?.answered??0)+1,score:status?.score??0,
-    completed:!!found.completed_at || ((total?.total??0)>0 && status?.answered===total?.total)});
+    nextPosition:(status?.answered??0)+1,score:status?.score??0,completed,
+    ...(completed?{review,durationSeconds:completedDuration(found.started_at,found.completed_at)}:{})});
 }
 async function recordRating(db:D1Database,pepper:string,userId:string,questionId:string,correct:boolean):Promise<void>{
   const voter=await keyedVoter(userId,pepper);
@@ -238,11 +261,12 @@ async function answer(request:Request,env:QuizEnv,user:Player|null):Promise<Resp
     .bind(session.id).first<{total:number;answered:number;score:number}>();
   const completed=!!summary&&summary.answered===summary.total;
   if(completed && summary){
-    await env.DB.prepare("UPDATE quiz_play_sessions SET completed_at=datetime('now') WHERE id=? AND completed_at IS NULL").bind(session.id).run();
+    await env.DB.prepare("UPDATE quiz_play_sessions SET completed_at=? WHERE id=? AND completed_at IS NULL")
+      .bind(new Date().toISOString(),session.id).run();
     if(user){
       const date=romeDay();
       const slug=session.mode==='daily'?'daily':`free:${session.category_slug??'all'}:${session.requested_difficulty??'mixed'}:${summary.total}`;
-      const seconds=Math.max(1,Math.round((Date.now()-Date.parse(session.started_at))/1000));
+      const seconds=completedDuration(session.started_at);
       await env.DB.prepare(`INSERT INTO quiz_results(user_id,quiz_date,quiz_slug,score,total,duration_seconds,completed_at)
         VALUES(?,?,?,?,?,?,?) ON CONFLICT(user_id,quiz_date,quiz_slug) DO UPDATE SET
           score=MAX(score,excluded.score),total=excluded.total,
@@ -252,7 +276,11 @@ async function answer(request:Request,env:QuizEnv,user:Player|null):Promise<Resp
     }
   }
   return reply({isCorrect,correctOptionIndex:correct.option_index,explanation:info.explanation,
-    score:summary?.score??0,total:summary?.total??0,completed});
+    score:summary?.score??0,total:summary?.total??0,completed,
+    ...(completed?{
+      durationSeconds:completedDuration(session.started_at),
+      review:await completedReview(env.DB,session.id),
+    }:{})});
 }
 
 /** Editorial endpoints. All actions require an authenticated email in ADMIN_EMAILS. */
