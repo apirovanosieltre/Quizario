@@ -16,7 +16,7 @@ const args = Object.fromEntries(process.argv.slice(2).filter(s => s.startsWith('
 const dataset = args.dataset ?? 'capitals';
 const limit = Number(args.limit ?? 50);
 const output = resolve(args.output ?? `imports/${dataset}.sql`);
-if (!['capitals','elements','opentdb'].includes(dataset)) throw Error('dataset deve essere capitals, elements o opentdb');
+if (!['capitals','currencies','elements','symbols','opentdb'].includes(dataset)) throw Error('dataset deve essere capitals, currencies, elements, symbols o opentdb');
 if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw Error('limit deve essere tra 1 e 200');
 
 const sha = s => createHash('sha256').update(s).digest('hex');
@@ -31,10 +31,13 @@ function makeWikidataQuestions(data) {
   for (const b of data?.results?.bindings ?? []) {
     const key = qid(b.country?.value ?? b.element?.value);
     const label = clean(b.countryLabel?.value ?? b.elementLabel?.value);
-    const answer = clean(b.capitalLabel?.value ?? b.elementLabel?.value);
-    const target = dataset==='capitals' ? qid(b.capital?.value) : Number(b.atomicNumber?.value);
+    const answer = clean(dataset==='currencies' ? b.currencyLabel?.value :
+      dataset==='symbols' ? b.symbol?.value : (b.capitalLabel?.value ?? b.elementLabel?.value));
+    const target = dataset==='capitals' ? qid(b.capital?.value) :
+      dataset==='currencies' ? qid(b.currency?.value) : Number(b.atomicNumber?.value);
     if (!key || !label || !answer || !target) continue;
-    if (dataset==='elements' && (!Number.isInteger(target) || target < 1 || target > 118)) continue;
+    if (['elements','symbols'].includes(dataset) && (!Number.isInteger(target) || target < 1 || target > 118)) continue;
+    if (dataset==='symbols' && !/^[A-Z][a-z]?$/.test(answer)) continue;
     const entry = { key, label, answer, target };
     const existing = byEntity.get(key);
     if (!existing) byEntity.set(key, [entry]);
@@ -47,21 +50,25 @@ function makeWikidataQuestions(data) {
   const candidates = rows.sort((a,b)=>a.key.localeCompare(b.key));
   const questions = [];
   for (const row of candidates) {
-    const category = dataset==='capitals' ? 'geografia' : 'scienza';
+    const category = ['capitals','currencies'].includes(dataset) ? 'geografia' : 'scienza';
     const prompt = dataset==='capitals'
       ? `Paese: ${row.label}. Qual è la capitale?`
+      : dataset==='currencies' ? `Paese: ${row.label}. Qual è la valuta?`
+      : dataset==='symbols' ? `Qual è il simbolo chimico dell'elemento ${row.label}?`
       : `Quale elemento chimico ha numero atomico ${row.target}?`;
     const explanation = dataset==='capitals'
       ? `La capitale del Paese indicato è ${row.answer}.`
+      : dataset==='currencies' ? `La valuta associata al Paese indicato è ${row.answer}.`
+      : dataset==='symbols' ? `Il simbolo chimico dell'elemento ${row.label} è ${row.answer}.`
       : `Il numero atomico ${row.target} identifica l'elemento ${row.answer}.`;
-    const difficulty = dataset==='capitals'
+    const difficulty = ['capitals','currencies'].includes(dataset)
       ? (EASY_CAPITALS.has(row.key) ? 'easy' : 'medium')
       : (row.target <= 20 ? 'easy' : row.target <= 50 ? 'medium' : 'hard');
     // Distractors must be other unique correct answers of the same data type.
     // For chemistry, favor neighboring atomic numbers; for capitals, shuffle deterministically.
     const other = candidates.filter(c=> c.key!==row.key && c.answer.toLocaleLowerCase('it')!==row.answer.toLocaleLowerCase('it'));
     other.sort((a,b)=>{
-      if (dataset==='elements') {
+      if (['elements','symbols'].includes(dataset)) {
         const d = Math.abs(a.target-row.target) - Math.abs(b.target-row.target);
         if (d) return d;
       }
@@ -117,10 +124,16 @@ function renderSql(questions) {
     const id=`q_${contentHash.slice(0,24)}`;
     const cols=['id','content_hash','category_slug','language','prompt','explanation','selection_key','editor_difficulty','effective_difficulty','status','source_id','source_item_id','source_url','import_batch_id','verified_at'];
     const vals=[id,contentHash,q.category,q.language,q.prompt,q.explanation,parseInt(contentHash.slice(0,7),16),q.difficulty,q.difficulty,'draft',q.source,q.sourceItem,q.sourceUrl,batchKey,null];
-    out.push(`INSERT OR IGNORE INTO questions (${cols.join(',')}) VALUES (${vals.map(sql).join(',')});`);
+    // Preserve edited drafts even if a later import would produce the original text again.
+    // The source item may be used by multiple recipes, so dedupe within the recipe.
+    out.push(`INSERT OR IGNORE INTO questions (${cols.join(',')}) SELECT ${vals.map(sql).join(',')}
+  WHERE NOT EXISTS (SELECT 1 FROM questions existing
+    LEFT JOIN import_batches batch ON batch.id=existing.import_batch_id
+    WHERE existing.source_id=${sql(q.source)} AND existing.source_item_id=${sql(q.sourceItem)}
+      AND batch.recipe=${sql(dataset)});`);
     q.options.forEach((choice,index)=>out.push(`INSERT OR IGNORE INTO question_options(question_id,option_index,answer_text,is_correct)
   SELECT ${sql(id)},${index},${sql(choice.text)},${choice.correct?1:0}
-  WHERE EXISTS (SELECT 1 FROM questions WHERE id=${sql(id)} AND status='draft');`));
+  WHERE EXISTS (SELECT 1 FROM questions WHERE id=${sql(id)} AND status='draft' AND content_hash=${sql(contentHash)});`));
   }
   return out.join('\n')+'\n';
 }
@@ -152,7 +165,16 @@ SELECT ?country ?countryLabel ?capital ?capitalLabel WHERE {
   ?country wdt:P31 wd:Q3624078; wdt:P36 ?capital; rdfs:label ?countryLabel.
   ?capital rdfs:label ?capitalLabel.
   FILTER(LANG(?countryLabel)="it" && LANG(?capitalLabel)="it")
-} LIMIT 400` : `
+} LIMIT 400` : dataset==='currencies' ? `
+SELECT ?country ?countryLabel ?currency ?currencyLabel WHERE {
+  ?country wdt:P31 wd:Q3624078; wdt:P38 ?currency; rdfs:label ?countryLabel.
+  ?currency rdfs:label ?currencyLabel.
+  FILTER(LANG(?countryLabel)="it" && LANG(?currencyLabel)="it")
+} LIMIT 400` : dataset==='symbols' ? `
+SELECT ?element ?elementLabel ?atomicNumber ?symbol WHERE {
+  ?element wdt:P31 wd:Q11344; wdt:P1086 ?atomicNumber; wdt:P246 ?symbol; rdfs:label ?elementLabel.
+  FILTER(LANG(?elementLabel)="it")
+} LIMIT 160` : `
 SELECT ?element ?elementLabel ?atomicNumber WHERE {
   ?element wdt:P31 wd:Q11344; wdt:P1086 ?atomicNumber; rdfs:label ?elementLabel.
   FILTER(LANG(?elementLabel)="it")

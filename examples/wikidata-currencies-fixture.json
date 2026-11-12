@@ -1,0 +1,114 @@
+{
+  "head": {
+    "vars": [
+      "country",
+      "countryLabel",
+      "currency",
+      "currencyLabel"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "country": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q38"
+        },
+        "countryLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "Italia"
+        },
+        "currency": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q4916"
+        },
+        "currencyLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "euro"
+        }
+      },
+      {
+        "country": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q30"
+        },
+        "countryLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "Stati Uniti d’America"
+        },
+        "currency": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q4917"
+        },
+        "currencyLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "dollaro statunitense"
+        }
+      },
+      {
+        "country": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q17"
+        },
+        "countryLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "Giappone"
+        },
+        "currency": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q8146"
+        },
+        "currencyLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "yen"
+        }
+      },
+      {
+        "country": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q145"
+        },
+        "countryLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "Regno Unito"
+        },
+        "currency": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q25224"
+        },
+        "currencyLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "sterlina britannica"
+        }
+      },
+      {
+        "country": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q39"
+        },
+        "countryLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "Svizzera"
+        },
+        "currency": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q25344"
+        },
+        "currencyLabel": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "franco svizzero"
+        }
+      }
+    ]
+  }
+}

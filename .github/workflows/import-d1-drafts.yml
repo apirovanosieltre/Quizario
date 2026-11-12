@@ -9,7 +9,9 @@ on:
         type: choice
         options:
           - capitals
+          - currencies
           - elements
+          - symbols
       limit:
         description: 'Numero massimo di domande (tutte draft)'
         required: true
