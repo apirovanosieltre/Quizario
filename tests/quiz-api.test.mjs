@@ -36,6 +36,7 @@ try{
   const mixed=await api('/api/quiz/start','POST',{mode:'free',category:'scienza',difficulty:'mixed',count:5});
   assert.equal(mixed.status,200);assert.equal(mixed.questions.length,5);
   assert.ok(!JSON.stringify(mixed).includes('correctOptionIndex'));assert.ok(!JSON.stringify(mixed).includes('explanation'));
+  assert.equal(mixed.review,undefined);assert.equal(mixed.durationSeconds,undefined);
   assert.deepEqual(Object.keys(mixed.questions[0]).sort(),['difficulty','id','options','prompt']);log('no answer key leaks at start');
   const outOfOrder=await api('/api/quiz/answer','POST',{sessionToken:mixed.sessionToken,position:2,optionIndex:1});
   assert.equal(outOfOrder.status,409);log('answers must be sequential');
@@ -43,13 +44,28 @@ try{
   assert.equal(wrongToken.status,401);log('session token enforced');
   const answered=await api('/api/quiz/answer','POST',{sessionToken:mixed.sessionToken,position:1,optionIndex:0});
   assert.equal(answered.status,200);assert.ok(Number.isInteger(answered.correctOptionIndex));
+  assert.equal(answered.review,undefined);log('review withheld before completion');
   const dup=await api('/api/quiz/answer','POST',{sessionToken:mixed.sessionToken,position:1,optionIndex:0});assert.equal(dup.status,409);log('answer replay blocked');
-  const resume=await api('/api/quiz/resume','POST',{sessionToken:mixed.sessionToken});assert.equal(resume.nextPosition,2);log('resume after reload');
+  const resume=await api('/api/quiz/resume','POST',{sessionToken:mixed.sessionToken});assert.equal(resume.nextPosition,2);
+  assert.equal(resume.review,undefined);assert.equal(resume.difficulty,'mixed');log('resume after reload without private review');
   for(let position=2;position<=5;position++){
     const result=await api('/api/quiz/answer','POST',{sessionToken:mixed.sessionToken,position,optionIndex:0});assert.equal(result.status,200);
-    if(position===5)assert.equal(result.completed,true);
+    if(position===5){
+      assert.equal(result.completed,true);
+      assert.ok(Number.isInteger(result.durationSeconds)&&result.durationSeconds>=1);
+      assert.equal(result.review.length,5);
+      assert.deepEqual(result.review.map(x=>x.position),[1,2,3,4,5]);
+      assert.ok(result.review.every(x=>Number.isInteger(x.correct_option_index)&&Number.isInteger(x.selected_option_index)));
+      assert.ok(result.review.every(x=>typeof x.explanation==='string'&&x.explanation.length>0));
+      log('completed review contains only server-validated answers and elapsed time');
+    }
   }
-  const after=await api('/api/quiz/answer','POST',{sessionToken:mixed.sessionToken,position:5,optionIndex:0});assert.equal(after.status,409);log('server-calculated completion');
+  const after=await api('/api/quiz/answer','POST',{sessionToken:mixed.sessionToken,position:5,optionIndex:0});assert.equal(after.status,409);
+  const completedResume=await api('/api/quiz/resume','POST',{sessionToken:mixed.sessionToken});
+  assert.equal(completedResume.completed,true);
+  assert.equal(completedResume.review.length,5);
+  assert.ok(completedResume.durationSeconds>=1);
+  log('server-calculated completion and restored finished review');
   const day1=await api('/api/quiz/start','POST',{mode:'daily'});assert.equal(day1.status,200);assert.equal(day1.questions.length,10);
   assert.deepEqual(day1.questions.map(x=>x.difficulty),['easy','easy','easy','medium','medium','medium','medium','hard','hard','hard']);
   const day2=await api('/api/quiz/start','POST',{mode:'daily'});assert.deepEqual(day1.questions,day2.questions);log('daily snapshots identical for guests');
