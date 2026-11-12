@@ -21,3 +21,4 @@ jobs:
       - run: npm run questions:engine-tests
       - run: npm run questions:api-tests
       - run: npm run db:verify:tests
+      - run: python tests/d1-trigger-repair.test.py
