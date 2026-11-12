@@ -1,0 +1,15 @@
+{
+  "head": {"vars":["country","countryLabel","capital","capitalLabel"]},
+  "results": {"bindings":[
+    {"country":{"value":"http://www.wikidata.org/entity/Q142"},"countryLabel":{"value":"Francia"},"capital":{"value":"http://www.wikidata.org/entity/Q90"},"capitalLabel":{"value":"Parigi"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q38"},"countryLabel":{"value":"Italia"},"capital":{"value":"http://www.wikidata.org/entity/Q220"},"capitalLabel":{"value":"Roma"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q183"},"countryLabel":{"value":"Germania"},"capital":{"value":"http://www.wikidata.org/entity/Q64"},"capitalLabel":{"value":"Berlino"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q29"},"countryLabel":{"value":"Spagna"},"capital":{"value":"http://www.wikidata.org/entity/Q2807"},"capitalLabel":{"value":"Madrid"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q145"},"countryLabel":{"value":"Regno Unito"},"capital":{"value":"http://www.wikidata.org/entity/Q84"},"capitalLabel":{"value":"Londra"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q17"},"countryLabel":{"value":"Giappone"},"capital":{"value":"http://www.wikidata.org/entity/Q1490"},"capitalLabel":{"value":"Tokyo"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q34"},"countryLabel":{"value":"Svezia"},"capital":{"value":"http://www.wikidata.org/entity/Q1754"},"capitalLabel":{"value":"Stoccolma"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q55"},"countryLabel":{"value":"Paesi Bassi"},"capital":{"value":"http://www.wikidata.org/entity/Q727"},"capitalLabel":{"value":"Amsterdam"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q148"},"countryLabel":{"value":"Cina"},"capital":{"value":"http://www.wikidata.org/entity/Q956"},"capitalLabel":{"value":"Pechino"}},
+    {"country":{"value":"http://www.wikidata.org/entity/Q16"},"countryLabel":{"value":"Canada"},"capital":{"value":"http://www.wikidata.org/entity/Q1930"},"capitalLabel":{"value":"Ottawa"}}
+  ]}
+}

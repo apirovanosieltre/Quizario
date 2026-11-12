@@ -1,0 +1,37 @@
+name: Prepare open-data quiz drafts (no D1 writes)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly on Monday, off the hour; generates artifacts only.
+    - cron: '17 4 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.2'
+      - name: Italian capital quiz candidates (50 max)
+        env:
+          QUIZARIO_USER_AGENT: 'QuizarioQuestionBank/0.3 (https://github.com/apirovanosieltre/Quizario; contact: https://github.com/apirovanosieltre/Quizario/issues)'
+        run: node scripts/import-open-questions.mjs --dataset=capitals --limit=50 --output=imports/generated/capitals.sql
+      - name: Cool down to respect Wikidata query service
+        run: sleep 12
+      - name: Italian chemical element quiz candidates (50 max)
+        env:
+          QUIZARIO_USER_AGENT: 'QuizarioQuestionBank/0.3 (https://github.com/apirovanosieltre/Quizario; contact: https://github.com/apirovanosieltre/Quizario/issues)'
+        run: node scripts/import-open-questions.mjs --dataset=elements --limit=50 --output=imports/generated/elements.sql
+      - name: Store draft SQL for human review
+        uses: actions/upload-artifact@v4
+        with:
+          name: quizario-wikidata-drafts
+          path: imports/generated/*.sql
+          if-no-files-found: error
+          retention-days: 14

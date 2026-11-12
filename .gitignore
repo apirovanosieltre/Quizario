@@ -1,0 +1,15 @@
+/node_modules
+/dist
+/.angular
+/.wrangler
+/out-tsc
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Cloudflare local secrets
+.dev.vars
+.dev.vars.*
+!.dev.vars.example

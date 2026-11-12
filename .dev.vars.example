@@ -1,0 +1,3 @@
+# Copia in .dev.vars, non committare .dev.vars
+ADMIN_EMAILS="tuo-indirizzo@example.com"
+RATING_PEPPER="sostituire-con-una-stringa-casuale-di-almeno-32-caratteri"

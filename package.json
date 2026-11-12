@@ -1,0 +1,49 @@
+{
+  "name": "quizario",
+  "version": "0.3.0",
+  "private": true,
+  "scripts": {
+    "start": "ng serve --host 0.0.0.0 --proxy-config proxy.conf.json",
+    "build": "ng build --configuration production",
+    "build:dev": "ng build --configuration development",
+    "dev:api": "wrangler dev --local --port 8787",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "deploy": "npm run build && wrangler deploy",
+    "typecheck:worker": "tsc -p tsconfig.worker.json --noEmit",
+    "smoke": "node scripts/smoke.mjs",
+    "check": "npm run typecheck:worker && npm run build && npm run smoke",
+    "questions:preview": "node scripts/import-open-questions.mjs --dataset=capitals --limit=7 --fixture=examples/wikidata-capitals-fixture.json --output=imports/capitals-preview.sql",
+    "questions:import:local": "wrangler d1 execute DB --local --file imports/capitals-preview.sql",
+    "questions:calibrate:local": "wrangler d1 execute DB --local --file scripts/recalibrate.sql",
+    "questions:tests": "python tests/question-bank.test.py",
+    "questions:qa:prepare": "node scripts/seed-qa-only.mjs --ack-local-only",
+    "questions:qa:local": "wrangler d1 execute DB --local --file imports/qa-only-local.sql",
+    "questions:engine-tests": "python tests/quiz-engine.test.py",
+    "questions:api-tests": "node tests/quiz-api.test.mjs",
+    "db:verify:remote": "node scripts/verify-cloudflare-d1.mjs",
+    "db:verify:tests": "node --test tests/d1-schema.test.mjs"
+  },
+  "engines": {
+    "node": ">=22.22.3"
+  },
+  "dependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "@angular/service-worker": "^22.2.0",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.0",
+    "@angular/cli": "^22.2.0",
+    "@angular/compiler-cli": "^22.2.0",
+    "@cloudflare/workers-types": "^5.20261110.1",
+    "typescript": "~6.0.2",
+    "wrangler": "^4.158.0"
+  }
+}

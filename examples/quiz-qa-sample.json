@@ -1,0 +1,418 @@
+[
+  {
+    "category": "cultura",
+    "prompt": "Quanti lati ha un esagono?",
+    "options": [
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "answer": 1,
+    "explanation": "Il prefisso esa- indica sei.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "cultura",
+    "prompt": "Quale strumento misura la pressione atmosferica?",
+    "options": [
+      "Igrometro",
+      "Barometro",
+      "Sismografo",
+      "Termometro"
+    ],
+    "answer": 1,
+    "explanation": "Il barometro misura la pressione dell’aria.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "cultura",
+    "prompt": "Qual è l’elemento chimico indicato da Au?",
+    "options": [
+      "Argento",
+      "Alluminio",
+      "Oro",
+      "Argon"
+    ],
+    "answer": 2,
+    "explanation": "Au deriva dal latino aurum.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "cultura",
+    "prompt": "Quante corde ha normalmente un violino?",
+    "options": [
+      "4",
+      "5",
+      "6",
+      "8"
+    ],
+    "answer": 0,
+    "explanation": "Il violino standard ha quattro corde.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "cultura",
+    "prompt": "Quale lingua è stata usata per scrivere l’Eneide?",
+    "options": [
+      "Greco",
+      "Latino",
+      "Etrusco",
+      "Italiano"
+    ],
+    "answer": 1,
+    "explanation": "Virgilio compose l’Eneide in latino.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Qual è il simbolo chimico dell’ossigeno?",
+    "options": [
+      "O",
+      "Ox",
+      "Os",
+      "Og"
+    ],
+    "answer": 0,
+    "explanation": "Il simbolo dell’ossigeno è O.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Quale pianeta del Sistema Solare è il più grande?",
+    "options": [
+      "Terra",
+      "Marte",
+      "Giove",
+      "Saturno"
+    ],
+    "answer": 2,
+    "explanation": "Giove è il pianeta più grande del Sistema Solare.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Qual è l’unità di misura della corrente elettrica?",
+    "options": [
+      "Volt",
+      "Ampere",
+      "Watt",
+      "Ohm"
+    ],
+    "answer": 1,
+    "explanation": "L’ampere misura l’intensità della corrente.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Quale gas assorbono le piante durante la fotosintesi?",
+    "options": [
+      "Ossigeno",
+      "Azoto",
+      "Elio",
+      "Anidride carbonica"
+    ],
+    "answer": 3,
+    "explanation": "Le piante assorbono CO₂ durante la fotosintesi.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Quante ossa ha in genere lo scheletro di un adulto?",
+    "options": [
+      "106",
+      "206",
+      "306",
+      "406"
+    ],
+    "answer": 1,
+    "explanation": "Il numero comunemente riportato è 206.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "storia",
+    "prompt": "In quale anno cadde l’Impero romano d’Occidente?",
+    "options": [
+      "476",
+      "800",
+      "1492",
+      "1453"
+    ],
+    "answer": 0,
+    "explanation": "Il 476 d.C. è la data convenzionale della caduta.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "storia",
+    "prompt": "Chi fu il primo imperatore romano?",
+    "options": [
+      "Nerone",
+      "Augusto",
+      "Cesare",
+      "Traiano"
+    ],
+    "answer": 1,
+    "explanation": "Ottaviano Augusto divenne il primo imperatore.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "storia",
+    "prompt": "In quale anno iniziò la Rivoluzione francese?",
+    "options": [
+      "1789",
+      "1815",
+      "1848",
+      "1914"
+    ],
+    "answer": 0,
+    "explanation": "La Rivoluzione francese iniziò nel 1789.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "storia",
+    "prompt": "Quale città venne sepolta dall’eruzione del Vesuvio nel 79 d.C.?",
+    "options": [
+      "Napoli",
+      "Pompei",
+      "Paestum",
+      "Roma"
+    ],
+    "answer": 1,
+    "explanation": "Pompei fu sepolta dai materiali vulcanici.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "storia",
+    "prompt": "In quale secolo visse Leonardo da Vinci?",
+    "options": [
+      "XIII e XIV",
+      "XIV e XV",
+      "XV e XVI",
+      "XVII e XVIII"
+    ],
+    "answer": 2,
+    "explanation": "Leonardo visse dal 1452 al 1519.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "geografia",
+    "prompt": "Qual è la capitale del Portogallo?",
+    "options": [
+      "Porto",
+      "Braga",
+      "Lisbona",
+      "Faro"
+    ],
+    "answer": 2,
+    "explanation": "La capitale del Portogallo è Lisbona.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "geografia",
+    "prompt": "In quale continente si trova il Perù?",
+    "options": [
+      "Asia",
+      "America del Sud",
+      "Africa",
+      "Europa"
+    ],
+    "answer": 1,
+    "explanation": "Il Perù si trova in America del Sud.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "geografia",
+    "prompt": "Quale mare bagna le coste delle Marche?",
+    "options": [
+      "Tirreno",
+      "Ligure",
+      "Adriatico",
+      "Ionio soltanto"
+    ],
+    "answer": 2,
+    "explanation": "Le Marche si affacciano sul mare Adriatico.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "geografia",
+    "prompt": "Qual è il fiume che attraversa Parigi?",
+    "options": [
+      "Tamigi",
+      "Senna",
+      "Reno",
+      "Po"
+    ],
+    "answer": 1,
+    "explanation": "La Senna attraversa Parigi.",
+    "difficulty": "easy"
+  },
+  {
+    "category": "geografia",
+    "prompt": "Qual è la vetta più alta delle Alpi?",
+    "options": [
+      "Monte Rosa",
+      "Cervino",
+      "Monte Bianco",
+      "Gran Paradiso"
+    ],
+    "answer": 2,
+    "explanation": "Il Monte Bianco è la vetta più alta della catena alpina.",
+    "difficulty": "medium"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Quale elemento chimico possiede il numero atomico 74?",
+    "options": [
+      "Molibdeno",
+      "Tungsteno",
+      "Tantalio",
+      "Rutenio"
+    ],
+    "answer": 1,
+    "explanation": "Il tungsteno, chiamato anche wolframio, ha numero atomico 74.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Quale lettera rappresenta la costante di Planck nelle formule fisiche?",
+    "options": [
+      "G",
+      "k",
+      "h",
+      "c"
+    ],
+    "answer": 2,
+    "explanation": "La costante di Planck è indicata con h e nel SI si misura in joule per secondo moltiplicato per secondo (J·s).",
+    "difficulty": "hard"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Qual è il numero atomico del titanio?",
+    "options": [
+      "22",
+      "24",
+      "26",
+      "28"
+    ],
+    "answer": 0,
+    "explanation": "Il titanio, simbolo Ti, ha numero atomico 22.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "scienza",
+    "prompt": "Quale particella determina l’identità di un elemento chimico?",
+    "options": [
+      "Elettrone",
+      "Neutrone",
+      "Fotone",
+      "Protone"
+    ],
+    "answer": 3,
+    "explanation": "Il numero di protoni nel nucleo determina il numero atomico e identifica l’elemento.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "geografia",
+    "prompt": "Qual è la capitale del Bhutan?",
+    "options": [
+      "Kathmandu",
+      "Thimphu",
+      "Vientiane",
+      "Dacca"
+    ],
+    "answer": 1,
+    "explanation": "Thimphu è la capitale del Bhutan, un Paese dell’Asia meridionale.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "geografia",
+    "prompt": "Quale fiume è considerato il più lungo d’Europa?",
+    "options": [
+      "Danubio",
+      "Reno",
+      "Volga",
+      "Dnepr"
+    ],
+    "answer": 2,
+    "explanation": "Il Volga è considerato il fiume più lungo del continente europeo.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "geografia",
+    "prompt": "In quale Paese si trova il lago Baikal?",
+    "options": [
+      "Kazakhstan",
+      "Russia",
+      "Mongolia",
+      "Cina"
+    ],
+    "answer": 1,
+    "explanation": "Il lago Baikal si trova nella Siberia meridionale, in Russia.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "geografia",
+    "prompt": "Qual è la capitale del Kirghizistan?",
+    "options": [
+      "Bishkek",
+      "Tashkent",
+      "Astana",
+      "Dushanbe"
+    ],
+    "answer": 0,
+    "explanation": "Bishkek è la capitale del Kirghizistan.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "storia",
+    "prompt": "In quale anno furono firmati i Trattati di Roma?",
+    "options": [
+      "1949",
+      "1957",
+      "1968",
+      "1979"
+    ],
+    "answer": 1,
+    "explanation": "I Trattati di Roma furono firmati il 25 marzo 1957.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "storia",
+    "prompt": "In quale anno venne promulgato il cosiddetto Editto di Milano?",
+    "options": [
+      "212",
+      "313",
+      "380",
+      "476"
+    ],
+    "answer": 1,
+    "explanation": "L’accordo di Milano sulla tolleranza religiosa viene tradizionalmente datato al 313 d.C.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "storia",
+    "prompt": "In quale anno Galileo pubblicò il Dialogo sopra i due massimi sistemi del mondo?",
+    "options": [
+      "1609",
+      "1616",
+      "1632",
+      "1665"
+    ],
+    "answer": 2,
+    "explanation": "Galileo pubblicò il Dialogo sopra i due massimi sistemi del mondo nel 1632.",
+    "difficulty": "hard"
+  },
+  {
+    "category": "cultura",
+    "prompt": "Chi compose la Sinfonia n. 9 «Dal Nuovo Mondo»?",
+    "options": [
+      "Antonín Dvořák",
+      "Gustav Mahler",
+      "Ludwig van Beethoven",
+      "Franz Schubert"
+    ],
+    "answer": 0,
+    "explanation": "La Sinfonia Dal Nuovo Mondo è una composizione del musicista ceco Antonín Dvořák.",
+    "difficulty": "hard"
+  }
+]
