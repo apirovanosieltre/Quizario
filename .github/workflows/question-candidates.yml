@@ -28,6 +28,18 @@ jobs:
         env:
           QUIZARIO_USER_AGENT: 'QuizarioQuestionBank/0.3 (https://github.com/apirovanosieltre/Quizario; contact: https://github.com/apirovanosieltre/Quizario/issues)'
         run: node scripts/import-open-questions.mjs --dataset=elements --limit=50 --output=imports/generated/elements.sql
+      - name: Cool down before extra datasets
+        run: sleep 12
+      - name: Italian currency quiz candidates (50 max)
+        env:
+          QUIZARIO_USER_AGENT: 'QuizarioQuestionBank/0.3 (https://github.com/apirovanosieltre/Quizario; contact: https://github.com/apirovanosieltre/Quizario/issues)'
+        run: node scripts/import-open-questions.mjs --dataset=currencies --limit=50 --output=imports/generated/currencies.sql
+      - name: Cool down before chemical symbols
+        run: sleep 12
+      - name: Chemical symbols quiz candidates (50 max)
+        env:
+          QUIZARIO_USER_AGENT: 'QuizarioQuestionBank/0.3 (https://github.com/apirovanosieltre/Quizario; contact: https://github.com/apirovanosieltre/Quizario/issues)'
+        run: node scripts/import-open-questions.mjs --dataset=symbols --limit=50 --output=imports/generated/symbols.sql
       - name: Store draft SQL for human review
         uses: actions/upload-artifact@v4
         with:
