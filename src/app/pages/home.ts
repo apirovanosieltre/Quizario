@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../core/auth.service';
 import { ProgressService } from '../core/progress.service';
+import { DailyProgressService } from '../core/daily-progress.service';
 import { QuizApiService, QuizCatalog } from '../core/quiz-api.service';
 import { CATEGORY_STYLES } from '../data/categories';
 import { apiErrorMessage } from '../core/errors';
@@ -16,8 +17,14 @@ import { apiErrorMessage } from '../core/errors';
         <h1>Allena la mente.<br><span class="highlight">Divertiti sul serio.</span></h1>
         <p>Domande sempre nuove, risposte verificate dal server. Scegli la difficoltà oppure partecipa alla sfida giornaliera uguale per tutti.</p>
         <div class="hero-actions">
-          <a class="button button-primary" routerLink="/quiz/daily">Sfida di oggi <span aria-hidden="true">↗</span></a>
-          <a class="button button-ghost" href="#categorie">Scegli categoria ↓</a>
+          @if (daily.current()?.completed) {
+            <a class="button button-primary" routerLink="/quiz/daily">✓ Sfida completata · {{daily.current()?.score}}/{{daily.current()?.total}}</a>
+          } @else if (daily.current()) {
+            <a class="button button-primary" routerLink="/quiz/daily">Sfida di oggi <span aria-hidden="true">↗</span></a>
+          } @else {
+            <span class="button button-primary daily-button-loading" role="status">Caricamento sfida…</span>
+          }
+          <a class="button button-ghost" href="#categorie">Esplora i quiz liberi ↓</a>
         </div>
         <div class="hero-pills"><span>✓ Gratuito</span><span>✓ Anche da PWA</span><span>✓ 3 difficoltà</span></div>
       </div>
@@ -30,12 +37,37 @@ import { apiErrorMessage } from '../core/errors';
         </div>
       </div>
     </section>
-    <section class="container today-section"><div class="today-card">
-      <div class="today-icon">◈</div>
-      <div class="today-text"><div class="small-label">LA SFIDA DI OGGI · {{ catalog()?.today || 'EUROPE/ROME' }}</div>
-        <h2>Dieci domande, un solo tentativo</h2>
-        <p>3 facili, 4 medie e 3 difficili. Le stesse per tutti.</p></div>
-      <a class="button button-light" routerLink="/quiz/daily">Gioca ora ↗</a>
+    <section class="container today-section"><div class="today-card" [class.today-completed]="daily.current()?.completed">
+      <div class="today-icon" aria-hidden="true">{{daily.current()?.completed?'✓':'◈'}}</div>
+      <div class="today-text">
+        @if (daily.current()?.completed; as done) {
+          <div class="small-label">✓ COMPLETATA OGGI · {{daily.current()?.today}}</div>
+          <h2>La sfida è conclusa: {{daily.current()?.score}}/{{daily.current()?.total}}</h2>
+          <p>🔥 {{daily.current()?.streak}} {{daily.current()?.streak===1?'giorno':'giorni'}} di streak · Torna domani per una nuova sfida.</p>
+          <p class="today-scope">Risultato {{daily.current()?.scope==='account'?'salvato nel profilo':'memorizzato su questo dispositivo'}}.</p>
+        } @else if (daily.current()) {
+          <div class="small-label">LA SFIDA DI OGGI · {{daily.current()?.today}}</div>
+          <h2>Dieci domande, un solo tentativo</h2>
+          <p>3 facili, 4 medie e 3 difficili. Le stesse per tutti.</p>
+          @if (daily.current()?.streak) {
+            <p class="today-streak-hint">🔥 Streak di {{daily.current()?.streak}} {{daily.current()?.streak===1?'giorno':'giorni'}}: gioca oggi per continuarla.</p>
+          }
+        } @else {
+          <div class="small-label">LA SFIDA DI OGGI</div>
+          <h2>Prepariamo il tuo risultato…</h2>
+          <p>Controllo della sfida in corso.</p>
+        }
+      </div>
+      <div class="today-actions">
+        @if (daily.current()?.completed) {
+          <a class="button button-light" href="#categorie">Prova altri quiz ↗</a>
+          <a class="today-review-link" routerLink="/quiz/daily">Vedi risultato di oggi</a>
+        } @else if (daily.current()) {
+          <a class="button button-light" routerLink="/quiz/daily">Gioca ora ↗</a>
+        } @else {
+          <span class="button button-light daily-button-loading" role="status">Caricamento…</span>
+        }
+      </div>
     </div></section>
     <section class="container section" id="categorie">
       <div class="section-heading"><div><div class="eyebrow secondary">QUIZ LIBERO</div><h2>Qual è il tuo forte?</h2></div>
@@ -75,6 +107,7 @@ import { apiErrorMessage } from '../core/errors';
 export class HomePage implements OnInit {
   protected readonly auth=inject(AuthService);
   protected readonly progress=inject(ProgressService);
+  protected readonly daily=inject(DailyProgressService);
   private readonly api=inject(QuizApiService);
   protected readonly catalog=signal<QuizCatalog|null>(null);
   protected readonly error=signal('');
@@ -82,6 +115,6 @@ export class HomePage implements OnInit {
     const fromDb=this.catalog()?.categories.find(c=>c.slug===style.slug);
     return {...style,total:fromDb?.total??0,label:fromDb?.label??style.title};
   }));
-  ngOnInit(){void this.load();}
+  ngOnInit(){void this.load();void this.daily.refresh();}
   protected async load(){try{this.error.set('');this.catalog.set(await this.api.catalog());}catch(e){this.error.set(apiErrorMessage(e));}}
 }
