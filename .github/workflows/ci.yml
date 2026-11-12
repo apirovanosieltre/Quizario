@@ -24,6 +24,7 @@ jobs:
       - run: python tests/editorial-import.test.py
       - run: npm run questions:tests
       - run: npm run questions:engine-tests
+      - run: python tests/pilot-questions.test.py
       - run: npm run questions:api-tests
       - run: node --test tests/results-ui.test.mjs
       - run: npm run security:tests
