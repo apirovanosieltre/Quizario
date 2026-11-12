@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 export interface AccountUser { id: string; nickname: string; email: string; createdAt: string; }
 interface UserResponse { user: AccountUser; }
+export interface SecurityConfig { turnstileSiteKey:string|null; registrationEnabled:boolean; passwordResetEnabled:boolean; }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -27,9 +28,22 @@ export class AuthService {
     this.user.set(response.user);
   }
 
-  async register(nickname: string, email: string, password: string): Promise<void> {
-    const response = await firstValueFrom(this.http.post<UserResponse>('/api/auth/register', { nickname, email, password }));
+  async register(nickname: string, email: string, password: string, turnstileToken: string): Promise<void> {
+    const response = await firstValueFrom(this.http.post<UserResponse>('/api/auth/register', { nickname, email, password, turnstileToken }));
     this.user.set(response.user);
+  }
+
+  async securityConfig():Promise<SecurityConfig> {
+    return firstValueFrom(this.http.get<SecurityConfig>('/api/security/config'));
+  }
+
+  async requestPasswordReset(email:string,turnstileToken:string):Promise<void> {
+    await firstValueFrom(this.http.post('/api/auth/password/forgot',{email,turnstileToken}));
+  }
+
+  async resetPassword(token:string,password:string):Promise<void> {
+    await firstValueFrom(this.http.post('/api/auth/password/reset',{token,password}));
+    this.user.set(null);
   }
 
   async changeNickname(nickname: string): Promise<void> {

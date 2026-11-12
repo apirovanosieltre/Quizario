@@ -112,3 +112,6 @@ Ulteriori dettagli su licenze e importazioni: [`docs/QUESTION_BANK_IT.md`](docs/
 ## Cloudflare D1 remoto e importazioni sicure
 
 Consulta [`docs/CLOUDFLARE_D1_IT.md`](docs/CLOUDFLARE_D1_IT.md). Sono disponibili: controllo dello schema remoto di sola lettura, generazione settimanale di bozze da Wikidata senza scrivere in D1 e importazione manuale di lotti limitati (tutti in stato `draft`). **Nessun deploy pubblico automatico**.
+## Sicurezza pre-lancio (v0.4)
+
+Sono stati aggiunti rate limiting Workers, Turnstile obbligatorio per la registrazione e il recupero password, link di reset firmati, e nuova bozza dell'informativa privacy. **La registrazione rimane disabilitata finché non sono configurati i secrets Cloudflare. Non eseguire un deploy pubblico prima di aver finalizzato l'informativa e collaudato i flussi.** Configurazione e test: [`docs/SECURITY_LAUNCH_IT.md`](docs/SECURITY_LAUNCH_IT.md).

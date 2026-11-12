@@ -22,7 +22,8 @@
     "questions:engine-tests": "python tests/quiz-engine.test.py",
     "questions:api-tests": "node tests/quiz-api.test.mjs",
     "db:verify:remote": "node scripts/verify-cloudflare-d1.mjs",
-    "db:verify:tests": "node --test tests/d1-schema.test.mjs"
+    "db:verify:tests": "node --test tests/d1-schema.test.mjs",
+    "security:tests": "node --test tests/security.test.mjs"
   },
   "engines": {
     "node": ">=22.22.3"

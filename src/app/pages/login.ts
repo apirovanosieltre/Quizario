@@ -18,6 +18,7 @@ import { apiErrorMessage } from '../core/errors';
           @if (error()) {<div role="alert" class="form-error">{{ error() }}</div>}
           <button type="submit" class="button button-primary full-button" [disabled]="busy() || !form.valid">{{ busy() ? 'Accesso in corso…' : 'Accedi →' }}</button>
         </form>
+        <p class="form-bottom"><a routerLink="/forgot-password">Password dimenticata?</a></p>
         <p class="form-bottom">Non hai ancora un account? <a routerLink="/register">Registrati</a></p>
       </div>
     </section>

@@ -1,7 +1,8 @@
 import { runMaintenance } from './maintenance';
 import { quizApi, QuizError } from './questions';
+import { enforceRateLimit, turnstileReady, passwordResetReady, verifyTurnstile, createResetToken, verifyResetToken, sendResetEmail, SecurityError, type SecurityEnv } from './security';
 /** Cloudflare Worker: REST API for accounts + static Angular assets. */
-interface Env {
+interface Env extends SecurityEnv {
   DB: D1Database;
   ASSETS: Fetcher;
   ADMIN_EMAILS?: string;
@@ -23,7 +24,7 @@ class ApiError extends Error {
   constructor(public readonly status: number, message: string) { super(message); }
 }
 
-const COOKIE_NAME = 'quizario_session';
+const COOKIE_NAME = '__Host-quizario_session';
 const SESSION_AGE_SECONDS = 60 * 60 * 24 * 30;
 const PBKDF2_ITERATIONS = 210_000;
 const encoder = new TextEncoder();
@@ -34,6 +35,8 @@ function json(data: unknown, status = 200, cookie?: string): Response {
     'cache-control': 'no-store',
     'x-content-type-options': 'nosniff',
     'referrer-policy': 'no-referrer',
+    'permissions-policy': 'camera=(), microphone=(), geolocation=()',
+    'x-frame-options': 'DENY',
   });
   if (cookie) headers.set('set-cookie', cookie);
   return new Response(JSON.stringify(data), { status, headers });
@@ -163,6 +166,22 @@ async function api(request: Request, env: Env): Promise<Response> {
   if (pathname === '/api/health' && request.method === 'GET') return json({ ok: true, service: 'quizario' });
   checkOrigin(request);
 
+  if (pathname === '/api/security/config' && request.method === 'GET') {
+    return json({
+      turnstileSiteKey: turnstileReady(env) ? env.TURNSTILE_SITE_KEY : null,
+      registrationEnabled: turnstileReady(env),
+      passwordResetEnabled: passwordResetReady(env),
+    });
+  }
+
+  // Limits protect both DB usage and account endpoints. Missing bindings fail closed.
+  if (pathname.startsWith('/api/quiz/') || pathname.startsWith('/api/admin/')) {
+    await enforceRateLimit(env, request, 'quiz');
+  } else if ((pathname.startsWith('/api/auth/') && request.method === 'POST') ||
+             (pathname === '/api/account' && request.method !== 'GET')) {
+    await enforceRateLimit(env, request, 'auth');
+  }
+
   if (pathname.startsWith('/api/quiz/') || pathname.startsWith('/api/admin/')) {
     const session = await sessionUser(request, env);
     return quizApi(request, env, session ? {id:session.user.id, email:session.user.email} : null);
@@ -173,6 +192,8 @@ async function api(request: Request, env: Env): Promise<Response> {
     const nickname = checkNickname(body['nickname']);
     const email = checkEmail(body['email']);
     const password = checkPassword(body['password']);
+    await enforceRateLimit(env, request, 'auth', email);
+    await verifyTurnstile(env, request, body['turnstileToken'], 'register');
     const existing = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
     if (existing) throw new ApiError(409, 'Questa email è già registrata.');
     const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -194,10 +215,51 @@ async function api(request: Request, env: Env): Promise<Response> {
   if (pathname === '/api/auth/login' && request.method === 'POST') {
     const body = await readBody(request);
     const email = checkEmail(body['email']);
+    await enforceRateLimit(env, request, 'auth', email);
     if (typeof body['password'] !== 'string') throw new ApiError(400, 'Password mancante.');
     const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).first<UserRow>();
     if (!user || !(await verifyPassword(body['password'], user))) throw new ApiError(401, 'Email o password non corretti.');
     return issueSession(user, env);
+  }
+
+  if (pathname === '/api/auth/password/forgot' && request.method === 'POST') {
+    if (!passwordResetReady(env)) throw new ApiError(503, 'Recupero password non configurato.');
+    const body = await readBody(request);
+    const email = checkEmail(body['email']);
+    await enforceRateLimit(env, request, 'auth', email);
+    await verifyTurnstile(env, request, body['turnstileToken'], 'recover');
+    const user = await env.DB.prepare('SELECT id,password_hash FROM users WHERE email=?').bind(email)
+      .first<Pick<UserRow,'id'|'password_hash'>>();
+    if (user) {
+      const token = await createResetToken(env.PASSWORD_RESET_SECRET!, user);
+      try { await sendResetEmail(env, email, token); }
+      catch { console.error('Password reset delivery failure'); }
+    }
+    // Never reveal whether this email is associated with an account.
+    return json({ok:true, message:'Se l’indirizzo è registrato, riceverai le istruzioni via email.'});
+  }
+
+  if (pathname === '/api/auth/password/reset' && request.method === 'POST') {
+    if (!passwordResetReady(env)) throw new ApiError(503, 'Recupero password non configurato.');
+    const body = await readBody(request);
+    const password = checkPassword(body['password']);
+    let resetUser: Pick<UserRow,'id'|'password_hash'> | null = null;
+    const uid = await verifyResetToken(env.PASSWORD_RESET_SECRET!, body['token'], async (id) => {
+      resetUser = await env.DB.prepare('SELECT id,password_hash FROM users WHERE id=?').bind(id)
+        .first<Pick<UserRow,'id'|'password_hash'>>();
+      return resetUser;
+    });
+    if (!uid || !resetUser) throw new ApiError(400,'Link di recupero non valido o scaduto.');
+    const oldHash: string = (resetUser as Pick<UserRow,'password_hash'>).password_hash;
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const hash = await hashPassword(password, salt, PBKDF2_ITERATIONS);
+    const results = await env.DB.batch([
+      env.DB.prepare('UPDATE users SET password_hash=?, password_salt=?, password_iterations=?, updated_at=? WHERE id=? AND password_hash=?')
+        .bind(hash, encodeBase64(salt), PBKDF2_ITERATIONS, new Date().toISOString(), uid, oldHash),
+      env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(uid),
+    ]);
+    if (results[0]?.meta?.changes !== 1) throw new ApiError(400,'Link già utilizzato. Richiedine uno nuovo.');
+    return json({ok:true, message:'Password aggiornata. Accedi nuovamente.'}, 200, createCookie('',0));
   }
 
   if (pathname === '/api/auth/me' && request.method === 'GET') {
@@ -245,7 +307,7 @@ export default {
     if (!new URL(request.url).pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     try { return await api(request, env); }
     catch (error) {
-      if (error instanceof ApiError || error instanceof QuizError) return json({ error: error.message }, error.status);
+      if (error instanceof ApiError || error instanceof QuizError || error instanceof SecurityError) return json({ error: error.message }, error.status);
       // Avoid leaking SQL, credentials, or internal error details to clients.
       console.error('Internal API failure:', error instanceof Error ? error.name : 'unknown');
       return json({ error: 'Errore temporaneo del server.' }, 500);

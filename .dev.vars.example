@@ -1,3 +1,12 @@
-# Copia in .dev.vars, non committare .dev.vars
+# Copia in .dev.vars; NON fare commit di .dev.vars.
 ADMIN_EMAILS="tuo-indirizzo@example.com"
-RATING_PEPPER="sostituire-con-una-stringa-casuale-di-almeno-32-caratteri"
+RATING_PEPPER="stringa-casuale-di-almeno-32-caratteri"
+# Turnstile: il server rifiuta registrazioni senza configurazione completa.
+TURNSTILE_SITE_KEY="sitekey-pubblica-dal-dashboard"
+TURNSTILE_SECRET_KEY="secret-privata-dal-dashboard"
+TURNSTILE_HOSTNAMES="localhost,127.0.0.1"
+# Solo per il recupero password via email (tutti richiesti):
+PASSWORD_RESET_SECRET="un-segreto-casuale-diverso-di-almeno-32-caratteri"
+RESEND_API_KEY="re_api_key_del_provider"
+MAIL_FROM="Quizario <noreply@tuodominio.it>"
+PUBLIC_BASE_URL="https://quiz.tuodominio.it/"
