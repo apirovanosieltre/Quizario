@@ -6,7 +6,22 @@ export interface QuizAttempt {
   correct: number;
   total: number;
   durationSeconds: number;
+  /** Free-mode tier, or 'daily'. Older locally stored entries may have no tier. */
+  difficulty?: string;
 }
+/** Compare only equivalent quizzes. A faster time breaks a tie in score. */
+export function bestComparableAttempt(
+  attempts: readonly QuizAttempt[], slug: string, total: number, difficulty: string,
+): QuizAttempt | null {
+  const same=attempts.filter(attempt=>attempt.slug===slug&&attempt.total===total&&attempt.difficulty===difficulty);
+  return same.reduce<QuizAttempt|null>((best,item)=>
+    !best||item.correct>best.correct||(item.correct===best.correct&&item.durationSeconds<best.durationSeconds)?item:best,null);
+}
+
+export function beatsPreviousBest(correct:number,seconds:number,prior:QuizAttempt|null):boolean {
+  return !!prior&&(correct>prior.correct||(correct===prior.correct&&seconds<prior.durationSeconds));
+}
+
 const STORAGE_KEY = 'quizario:quiz-attempts:v2';
 
 function readLocal(): QuizAttempt[] {

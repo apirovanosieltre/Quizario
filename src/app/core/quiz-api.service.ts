@@ -11,18 +11,31 @@ export interface QuizCatalog {
   today:string;
 }
 export interface PublicQuestion { id:string;prompt:string;difficulty:string;options:string[]; }
+export interface QuizReview {
+  position:number;
+  question_id:string;
+  selected_option_index:number;
+  correct_option_index:number;
+  is_correct:number;
+  explanation:string|null;
+}
 export interface QuizSession {
   sessionToken:string;
   mode:QuizMode;
   date:string|null;
+  difficulty?:Difficulty|null;
   questions:PublicQuestion[];
   nextPosition:number;
   score:number;
   completed?:boolean;
+  durationSeconds?:number;
+  review?:QuizReview[];
 }
 export interface QuizAnswer {
   isCorrect:boolean; correctOptionIndex:number; explanation:string;
   score:number;total:number;completed:boolean;
+  durationSeconds?:number;
+  review?:QuizReview[];
 }
 export interface EditorialOption { option_index:number;answer_text:string;is_correct:number; }
 export interface EditorialQuestion {

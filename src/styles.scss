@@ -299,3 +299,114 @@ p { line-height: 1.65; }
 @media (max-width:800px) {.admin-filters {grid-template-columns:repeat(2,minmax(0,1fr));}.admin-filters label:first-child {grid-column:1/-1;}}
 @media (max-width:500px) {.admin-filters {grid-template-columns:1fr;}.admin-filters label:first-child {grid-column:initial;}.admin-editor-grid {grid-template-columns:1fr;}.admin-answer-edit {flex-direction:column;align-items:stretch;}.admin-pagination button {font-size:12px;padding:10px;}}
 .connection-banner {padding:14px 22px;background:#513a29;color:#ffe1bd;text-align:center;font-weight:650;border-bottom:1px solid #986c49;}
+
+
+/* Quizario result experience: readable, responsive and motion-optional. */
+.result-card-expanded {
+  position: relative;
+  overflow: hidden;
+  border-color: #6a516a;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(245,139,107,.15), transparent 58%),
+    var(--surface);
+}
+.result-sparkles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.result-sparkles span { position: absolute; font-size: 25px; color: var(--coral); opacity: .85; animation: result-float 4s ease-in-out infinite; }
+.result-sparkles span:nth-child(1) { top: 13%; left: 12%; }
+.result-sparkles span:nth-child(2) { top: 22%; right: 13%; color: var(--mint); animation-delay: -.9s; }
+.result-sparkles span:nth-child(3) { top: 44%; right: 6%; color: var(--lavender); animation-delay: -1.9s; }
+.result-card-expanded .eyebrow, .result-card-expanded h2, .result-card-expanded p,
+.result-card-expanded .result-actions, .result-card-expanded .result-metrics,
+.result-card-expanded .result-score-ring { position: relative; z-index: 1; }
+.result-card-expanded h2 { font-size: clamp(30px, 4.5vw, 49px); line-height: 1.1; }
+.result-subtitle { max-width: 470px; margin-inline: auto; color: var(--muted); }
+.result-score-ring {
+  --score-percentage: 0%;
+  display: grid;
+  place-items: center;
+  width: min(220px, 64vw);
+  height: min(220px, 64vw);
+  margin: 30px auto;
+  padding: 11px;
+  border-radius: 50%;
+  background: conic-gradient(var(--mint) var(--score-percentage), #493951 0);
+  box-shadow: 0 0 0 7px rgba(134,215,174,.05), 0 18px 55px rgba(0,0,0,.15);
+}
+.result-score-core {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--bg-deep);
+}
+.result-score-percent { color: var(--mint); font-size: clamp(48px, 10vw, 64px); font-weight: 900; letter-spacing: -.06em; line-height: 1; }
+.result-score-caption { color: var(--muted); font-size: 13px; font-weight: 700; }
+.result-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 12px;
+  max-width: 650px;
+  margin: 23px auto;
+}
+.result-metrics > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 15px 10px;
+  border-radius: 15px;
+  border: 1px solid var(--line);
+  background: rgba(19,14,30,.52);
+}
+.result-metrics strong { font-size: clamp(20px, 4vw, 28px); color: var(--text); line-height: 1.2; }
+.result-metrics span { font-size: 12px; color: var(--muted); font-weight: 700; }
+.result-card .result-record {
+  margin: 18px auto;
+  max-width: 530px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  background: rgba(134,215,174,.1);
+  border: 1px solid rgba(134,215,174,.5);
+  color: var(--mint);
+  font-size: 14px;
+  font-weight: 750;
+}
+.result-card .result-record-secondary { margin: 18px auto; color: var(--muted); font-size: 13px; }
+.result-card .result-share-status { color: var(--mint); font-weight: 700; margin-top: 14px; }
+.result-review { padding: clamp(20px, 4vw, 35px); margin-top: 22px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); }
+.result-review-header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.result-review-header .eyebrow { margin-bottom: 10px; }
+.result-review-header h3 { font-size: clamp(23px, 3vw, 30px); letter-spacing: -.035em; margin-bottom: 0; }
+.result-review-count { padding: 7px 12px; background: var(--surface-2); color: var(--muted); border-radius: 99px; font-size: 12px; font-weight: 750; }
+.result-review-filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 22px 0; }
+.result-review-filters button { color: var(--text); border: 1px solid var(--line); border-radius: 99px; padding: 10px 16px; background: var(--surface-2); font-weight: 750; }
+.result-review-filters button.active { color: var(--bg-deep); background: var(--mint); border-color: var(--mint); }
+.result-review-filters button:disabled { opacity: .46; cursor: not-allowed; }
+.result-review-list { display: grid; gap: 12px; }
+.result-review-item { border: 1px solid #735161; border-radius: 16px; padding: 18px; background: #352434; }
+.result-review-item.is-correct { background: #25392f; border-color: #47745c; }
+.result-review-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; color: #ffb4ba; font-size: 11px; letter-spacing: .08em; font-weight: 850; }
+.result-review-item.is-correct .result-review-meta { color: var(--mint); }
+.result-review-item h4 { margin: 13px 0 15px; font-size: clamp(17px, 2.2vw, 21px); line-height: 1.35; }
+.result-review-item p { margin-bottom: 8px; font-size: 14px; }
+.result-review-item p strong { color: var(--text); }
+.result-review-item .result-correct-answer { color: var(--mint); }
+.result-review-explanation { margin-top: 14px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,.12); color: var(--muted); }
+.result-review-perfect { padding: 20px; color: var(--mint); font-weight: 750; border: 1px solid #47745c; border-radius: 14px; }
+.result-review-perfect span { margin-right: 8px; }
+@keyframes result-float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-11px) rotate(12deg); } }
+@media (max-width: 540px) {
+  .result-card-expanded .result-actions > * { width: 100%; }
+  .result-metrics { gap: 6px; }
+  .result-metrics > div { padding: 12px 5px; }
+  .result-metrics strong { font-size: 20px; }
+  .result-metrics span { font-size: 11px; }
+  .result-review-item { padding: 15px 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .result-sparkles span { animation: none; }
+}
