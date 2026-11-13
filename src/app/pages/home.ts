@@ -99,7 +99,7 @@ import { apiErrorMessage } from '../core/errors';
           <div class="daily-goal-tile">
             <span>Prossimo traguardo</span>
             @if (nextMilestone(); as next) {
-              <strong>{{next}} giorni</strong><small>Ti mancano {{next-info.streak}} {{next-info.streak===1?'giorno':'giorni'}}</small>
+              <strong>{{next}} giorni</strong><small>Ti mancano {{next-info.streak}} {{(next-info.streak)===1?'giorno':'giorni'}}</small>
             } @else {
               <strong>100+ giorni</strong><small>Hai raggiunto tutti i traguardi previsti!</small>
             }
