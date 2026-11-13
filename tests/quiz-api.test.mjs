@@ -98,6 +98,9 @@ try{
   }
   const threeDayStreak=await api('/api/quiz/daily/status','GET',undefined,user);
   assert.equal(threeDayStreak.streak,3);assert.equal(threeDayStreak.score,completedDaily.score);
+  assert.equal(threeDayStreak.bestStreak,3);
+  assert.equal(threeDayStreak.totalDays,4);
+  assert.ok(threeDayStreak.recentDays.includes(catalogue.today));
   const otherUser={id:'inactive-player',email:'inactive@test.example'};
   await DB.prepare("INSERT INTO users(id,nickname,email,password_hash,password_salt,password_iterations,created_at,updated_at) VALUES('inactive-player','Inactive','inactive@test.example','hash','salt',210000,datetime('now'),datetime('now'))").run();
   await DB.prepare(`INSERT INTO quiz_results(user_id,quiz_date,quiz_slug,score,total,duration_seconds,completed_at)
