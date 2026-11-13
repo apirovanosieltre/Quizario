@@ -144,6 +144,13 @@ async function dailyStatus(env:QuizEnv,user:Player|null):Promise<Response> {
     value.setUTCDate(value.getUTCDate()-1);
     return value.toISOString().slice(0,10);
   };
+  const chronological=[...dates].sort();
+  let bestStreak=0,chain=0,prior:string|null=null;
+  for(const date of chronological){
+    chain=prior&&previousDay(date)===prior?chain+1:1;
+    bestStreak=Math.max(bestStreak,chain);
+    prior=date;
+  }
   let cursor=dates.has(today)?today:previousDay(today);
   let streak=0;
   while(dates.has(cursor)) {
@@ -153,7 +160,8 @@ async function dailyStatus(env:QuizEnv,user:Player|null):Promise<Response> {
   return reply({
     today,completed:!!todayResult,score:todayResult?.score??null,
     total:todayResult?.total??null,durationSeconds:todayResult?.duration_seconds??null,
-    streak,scope:'account',
+    streak,scope:'account',recentDays:[...dates].filter(date=>date>=new Date(Date.parse(today+'T00:00:00Z')-27*86400000).toISOString().slice(0,10)),
+    totalDays:dates.size,bestStreak,
   });
 }
 

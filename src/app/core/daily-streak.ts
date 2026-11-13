@@ -7,6 +7,9 @@ export interface DailySummary {
   durationSeconds:number|null;
   streak:number;
   scope:'account'|'device';
+  recentDays:string[];
+  totalDays:number;
+  bestStreak:number;
 }
 export interface DailyAttempt {
   slug:string;
@@ -47,6 +50,33 @@ export function dailyStreak(days:Iterable<string>,today:string):number {
   return count;
 }
 
+export const STREAK_MILESTONES = [3,7,14,30,60,100] as const;
+export function nextStreakMilestone(streak:number):number|null {
+  return STREAK_MILESTONES.find(value=>value>streak)??null;
+}
+export function longestDailyStreak(days:Iterable<string>):number {
+  const dates=[...new Set(days)].sort();
+  let longest=0,current=0,prior:string|null=null;
+  for(const date of dates){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date))continue;
+    current=prior&&previousDay(date)===prior?current+1:1;
+    longest=Math.max(longest,current);
+    prior=date;
+  }
+  return longest;
+}
+/** Returns 28 completed/calendar days ending with today, UTC-safe across DST. */
+export function dailyCalendar(today:string,played:Iterable<string>):{date:string;done:boolean}[]{
+  const complete=new Set(played);
+  const dates:{date:string;done:boolean}[]=[];
+  let day=today;
+  for(let i=0;i<28;i++){
+    dates.push({date:day,done:complete.has(day)});
+    day=previousDay(day);
+  }
+  return dates.reverse();
+}
+
 /**
  * Guests have no server account history: show only their local device results.
  * Historical entries without ownerId are legacy local results and remain supported.
@@ -59,5 +89,8 @@ export function guestDailySummary(attempts:readonly DailyAttempt[],today=romeDay
     today,completed:!!done,score:done?.correct??null,total:done?.total??null,
     durationSeconds:done?.durationSeconds??null,
     streak:dailyStreak(daily.map(a=>a.date),today),scope:'device',
+    recentDays:[...new Set(daily.map(a=>a.date))],
+    totalDays:new Set(daily.map(a=>a.date)).size,
+    bestStreak:longestDailyStreak(daily.map(a=>a.date)),
   };
 }

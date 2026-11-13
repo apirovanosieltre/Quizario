@@ -467,3 +467,30 @@ p { line-height: 1.65; }
 @media (max-width:380px) {
   .daily-completed-metrics { grid-template-columns: 1fr; }
 }
+
+
+/* Daily challenge calendar and attainable streak goals */
+.daily-goals-section { margin-top: 27px; }
+.daily-goals-head { display:flex; justify-content:space-between; align-items:end; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+.daily-goals-head h2 { margin:9px 0 0; font-size:clamp(22px,3.2vw,31px); }
+.daily-goal-caption { font-size:12px; color:var(--muted); }
+.daily-goals-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.daily-goal-tile { display:flex; flex-direction:column; gap:8px; padding:20px; border:1px solid var(--line); border-radius:18px; background:var(--surface); }
+.daily-goal-tile > span { color:var(--muted); font-size:12px; font-weight:700; }
+.daily-goal-tile > strong { font-size:clamp(24px,3vw,32px); line-height:1.1; color:var(--mint); }
+.daily-goal-tile > small { font-size:12px; color:var(--muted); line-height:1.45; }
+.daily-calendar-card { margin-top:14px; padding:22px; border:1px solid var(--line); border-radius:20px; background:var(--surface); }
+.daily-calendar-heading { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px; margin-bottom:15px; }
+.daily-calendar-heading h3 { margin:0; font-size:19px; }
+.daily-calendar-heading > span { font-size:12px; color:var(--muted); }
+.daily-calendar-grid { display:grid; grid-template-columns:repeat(14,minmax(0,1fr)); gap:6px; }
+.daily-calendar-day { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:54px; padding:5px 2px; border-radius:11px; border:1px solid var(--line); color:var(--muted); background:var(--bg-deep); font-size:12px; }
+.daily-calendar-day.is-done { background:rgba(134,215,174,.12); border-color:rgba(134,215,174,.55); color:var(--mint); }
+.daily-calendar-day.is-today { outline:2px solid var(--coral); outline-offset:1px; }
+.calendar-day-symbol { font-size:16px; font-weight:850; }
+.daily-milestones { display:flex; gap:8px; flex-wrap:wrap; margin-top:17px; }
+.daily-milestones span { border-radius:99px; padding:8px 12px; color:var(--muted); background:var(--surface-2); border:1px solid var(--line); font-size:12px; font-weight:750; }
+.daily-milestones span.unlocked { color:var(--mint); border-color:rgba(134,215,174,.55); background:rgba(134,215,174,.09); }
+.daily-calendar-card .helper-note { font-size:12px; margin-bottom:0; }
+@media(max-width:800px) { .daily-calendar-grid { grid-template-columns:repeat(7,minmax(0,1fr)); } }
+@media(max-width:580px) { .daily-goals-summary { grid-template-columns:1fr 1fr; } .daily-goal-tile:last-child { grid-column:1/-1; } .daily-calendar-card { padding:16px 12px; } .daily-calendar-day { min-height:48px; } }

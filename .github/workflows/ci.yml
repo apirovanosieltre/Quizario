@@ -25,6 +25,7 @@ jobs:
       - run: npm run questions:tests
       - run: npm run questions:engine-tests
       - run: python tests/pilot-questions.test.py
+      - run: python tests/editorial-bank.test.py
       - run: npm run questions:api-tests
       - run: node --test tests/results-ui.test.mjs
       - run: node --test tests/daily-streak.test.mjs
