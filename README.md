@@ -119,3 +119,9 @@ Sono stati aggiunti rate limiting Workers, Turnstile obbligatorio per la registr
 ## Prime 30 domande pilota (Geografia + Scienza)
 
 30 domande editoriali con fonti Wikidata e IUPAC, 5 per categoria/difficoltà; lo script SQL idempotente viene validato in SQLite. **Al merge sul branch `main`, il workflow `Publish first 30 Quizario questions (one-off pilot)` pubblica il lotto su Cloudflare D1** utilizzando l'ambiente GitHub `Environments`, senza deploy del Worker. Nessuna domanda QA locale viene utilizzata. Dettagli, verifiche e rischi: [`docs/PILOT_QUESTIONS_IT.md`](docs/PILOT_QUESTIONS_IT.md).
+
+## Classifica giornaliera (opt-in)
+
+Classifica pubblica dei migliori 20 giocatori registrati per punteggio decrescente e tempo crescente. La preferenza di partecipazione è **disattivata per impostazione predefinita**; ogni giocatore deve attivarla esplicitamente da `/classifica`. La classifica mostra soltanto pseudonimi giornalieri, score e tempo, mai nickname o email. Gli ospiti possono consultare la classifica ma non contribuire al ranking.
+
+La migrazione additiva `migrations/0004_daily_leaderboard.sql` viene applicata sul database reale tramite il workflow `Setup daily leaderboard consent in D1` (GitHub Actions, ambiente `Environments`). Prima di esporre la nuova UI, verificare che il workflow sia verde. Nessun deploy Worker automatico viene avviato dalla migrazione. Consulta [docs/DAILY_LEADERBOARD_IT.md](docs/DAILY_LEADERBOARD_IT.md).
