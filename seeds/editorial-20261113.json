@@ -1,0 +1,1028 @@
+{
+  "version": 1,
+  "createdAt": "2026-11-13",
+  "publicationStatus": "draft",
+  "reviewRequired": true,
+  "questions": [
+    {
+      "id": "E01",
+      "category": "storia",
+      "difficulty": "easy",
+      "prompt": "In quale anno cadde il Muro di Berlino?",
+      "explanation": "Il Muro di Berlino fu aperto il 9 novembre 1989.",
+      "options": [
+        "1979",
+        "1989",
+        "1991",
+        "2001"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-1",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Muro_di_Berlino"
+    },
+    {
+      "id": "E02",
+      "category": "storia",
+      "difficulty": "easy",
+      "prompt": "Chi fu il primo imperatore romano?",
+      "explanation": "Ottaviano Augusto fu il primo imperatore di Roma.",
+      "options": [
+        "Augusto",
+        "Giulio Cesare",
+        "Nerone",
+        "Traiano"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-2",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Augusto"
+    },
+    {
+      "id": "E03",
+      "category": "storia",
+      "difficulty": "easy",
+      "prompt": "In quale anno Cristoforo Colombo raggiunse le Americhe?",
+      "explanation": "Il viaggio di Colombo raggiunse le Americhe nel 1492.",
+      "options": [
+        "1453",
+        "1519",
+        "1600",
+        "1492"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-3",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Cristoforo_Colombo"
+    },
+    {
+      "id": "E04",
+      "category": "storia",
+      "difficulty": "easy",
+      "prompt": "In quale Paese ebbe inizio la Rivoluzione francese?",
+      "explanation": "La Rivoluzione francese iniziò in Francia nel 1789.",
+      "options": [
+        "Italia",
+        "Spagna",
+        "Francia",
+        "Germania"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-4",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Rivoluzione_francese"
+    },
+    {
+      "id": "E05",
+      "category": "storia",
+      "difficulty": "easy",
+      "prompt": "In quale anno terminò la Seconda guerra mondiale?",
+      "explanation": "La Seconda guerra mondiale terminò nel 1945.",
+      "options": [
+        "1918",
+        "1945",
+        "1939",
+        "1950"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-5",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Seconda_guerra_mondiale"
+    },
+    {
+      "id": "E06",
+      "category": "storia",
+      "difficulty": "medium",
+      "prompt": "In quale anno fu concessa la Magna Carta in Inghilterra?",
+      "explanation": "Giovanni d'Inghilterra accettò la Magna Carta nel 1215.",
+      "options": [
+        "1215",
+        "1066",
+        "1348",
+        "1492"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-6",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Magna_Carta"
+    },
+    {
+      "id": "E07",
+      "category": "storia",
+      "difficulty": "medium",
+      "prompt": "Quale condottiero fu sconfitto nella battaglia di Waterloo?",
+      "explanation": "Napoleone fu sconfitto a Waterloo nel 1815.",
+      "options": [
+        "Giulio Cesare",
+        "Alessandro Magno",
+        "Giuseppe Garibaldi",
+        "Napoleone Bonaparte"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-7",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Battaglia_di_Waterloo"
+    },
+    {
+      "id": "E08",
+      "category": "storia",
+      "difficulty": "medium",
+      "prompt": "In quale anno fu proclamato il Regno d'Italia?",
+      "explanation": "Il Regno d'Italia venne proclamato il 17 marzo 1861.",
+      "options": [
+        "1848",
+        "1870",
+        "1861",
+        "1918"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-8",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Regno_d'Italia_(1861-1946)"
+    },
+    {
+      "id": "E09",
+      "category": "storia",
+      "difficulty": "medium",
+      "prompt": "Quale inventore europeo è associato alla stampa a caratteri mobili nel XV secolo?",
+      "explanation": "Gutenberg contribuì alla diffusione della stampa a caratteri mobili in Europa.",
+      "options": [
+        "Leonardo da Vinci",
+        "Johannes Gutenberg",
+        "Alessandro Volta",
+        "Blaise Pascal"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-9",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Johannes_Gutenberg"
+    },
+    {
+      "id": "E10",
+      "category": "storia",
+      "difficulty": "medium",
+      "prompt": "In quale anno Costantinopoli fu conquistata dagli Ottomani?",
+      "explanation": "Gli Ottomani conquistarono Costantinopoli nel 1453.",
+      "options": [
+        "1453",
+        "1204",
+        "1492",
+        "1517"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-10",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Caduta_di_Costantinopoli"
+    },
+    {
+      "id": "E11",
+      "category": "storia",
+      "difficulty": "hard",
+      "prompt": "In quale anno si combatté la battaglia di Hastings?",
+      "explanation": "La battaglia di Hastings, nel 1066, fu decisiva nella conquista normanna dell'Inghilterra.",
+      "options": [
+        "1000",
+        "1215",
+        "1314",
+        "1066"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-11",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Battaglia_di_Hastings"
+    },
+    {
+      "id": "E12",
+      "category": "storia",
+      "difficulty": "hard",
+      "prompt": "Quale accordo è associato alla conclusione della guerra dei Trent'anni?",
+      "explanation": "Le paci di Vestfalia del 1648 contribuirono a chiudere la guerra dei Trent'anni.",
+      "options": [
+        "Pace di Utrecht",
+        "Trattato di Tordesillas",
+        "Pace di Vestfalia",
+        "Pace di Augusta"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-12",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Pace_di_Vestfalia"
+    },
+    {
+      "id": "E13",
+      "category": "storia",
+      "difficulty": "hard",
+      "prompt": "Quale congresso ridisegnò l'Europa dopo le guerre napoleoniche?",
+      "explanation": "Il Congresso di Vienna si svolse nel 1814-1815 dopo la sconfitta di Napoleone.",
+      "options": [
+        "Congresso di Berlino",
+        "Congresso di Vienna",
+        "Conferenza di Yalta",
+        "Congresso di Parigi del 1856"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-13",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Congresso_di_Vienna"
+    },
+    {
+      "id": "E14",
+      "category": "storia",
+      "difficulty": "hard",
+      "prompt": "Quale sovrano governò l'Impero del Mali nel XIV secolo ed è noto per il pellegrinaggio alla Mecca?",
+      "explanation": "Mansa Musa governò il Mali e compì un celebre pellegrinaggio nel 1324.",
+      "options": [
+        "Mansa Musa",
+        "Sundiata Keita",
+        "Askia Muhammad",
+        "Shaka Zulu"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-14",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Mansa_Musa"
+    },
+    {
+      "id": "E15",
+      "category": "storia",
+      "difficulty": "hard",
+      "prompt": "In quale Paese avvenne la Rivoluzione dei garofani del 1974?",
+      "explanation": "La Rivoluzione dei garofani del 25 aprile 1974 rovesciò la dittatura in Portogallo.",
+      "options": [
+        "Grecia",
+        "Cile",
+        "Belgio",
+        "Portogallo"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-15",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Rivoluzione_dei_garofani"
+    },
+    {
+      "id": "E16",
+      "category": "sport",
+      "difficulty": "easy",
+      "prompt": "Quanti calciatori schiera una squadra all'inizio di una partita di calcio a undici?",
+      "explanation": "Nel calcio a undici una squadra inizia normalmente con undici giocatori.",
+      "options": [
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-16",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Calcio_(sport)"
+    },
+    {
+      "id": "E17",
+      "category": "sport",
+      "difficulty": "easy",
+      "prompt": "A quale sport è associato il torneo di Wimbledon?",
+      "explanation": "Il torneo di Wimbledon è uno dei quattro tornei del Grande Slam di tennis.",
+      "options": [
+        "Golf",
+        "Tennis",
+        "Badminton",
+        "Pallavolo"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-17",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Torneo_di_Wimbledon"
+    },
+    {
+      "id": "E18",
+      "category": "sport",
+      "difficulty": "easy",
+      "prompt": "Quanti giocatori per squadra si trovano in campo nella pallacanestro?",
+      "explanation": "Nel basket ciascuna squadra schiera cinque giocatori in campo.",
+      "options": [
+        "5",
+        "4",
+        "6",
+        "7"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-18",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Pallacanestro"
+    },
+    {
+      "id": "E19",
+      "category": "sport",
+      "difficulty": "easy",
+      "prompt": "Ogni quanti anni si svolgono normalmente i Giochi olimpici estivi?",
+      "explanation": "I Giochi olimpici estivi si svolgono normalmente ogni quattro anni.",
+      "options": [
+        "2",
+        "3",
+        "5",
+        "4"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-19",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Giochi_olimpici_estivi"
+    },
+    {
+      "id": "E20",
+      "category": "sport",
+      "difficulty": "easy",
+      "prompt": "Quanto misura ufficialmente la maratona?",
+      "explanation": "La maratona su strada misura 42 chilometri e 195 metri.",
+      "options": [
+        "40 km",
+        "41,200 km",
+        "42,195 km",
+        "45 km"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-20",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Maratona_(atletica_leggera)"
+    },
+    {
+      "id": "E21",
+      "category": "sport",
+      "difficulty": "medium",
+      "prompt": "Quanti giocatori schiera ogni squadra di pallavolo indoor in campo?",
+      "explanation": "Nella pallavolo indoor ci sono sei giocatori per squadra in campo.",
+      "options": [
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-21",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Pallavolo"
+    },
+    {
+      "id": "E22",
+      "category": "sport",
+      "difficulty": "medium",
+      "prompt": "In quale Paese si disputò il primo Campionato mondiale di calcio maschile?",
+      "explanation": "La prima Coppa del mondo FIFA si disputò in Uruguay nel 1930.",
+      "options": [
+        "Uruguay",
+        "Brasile",
+        "Italia",
+        "Francia"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-22",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Campionato_mondiale_di_calcio_1930"
+    },
+    {
+      "id": "E23",
+      "category": "sport",
+      "difficulty": "medium",
+      "prompt": "Quante nazioni ospitano i quattro tornei del Grande Slam di tennis?",
+      "explanation": "Australian Open, Roland Garros, Wimbledon e US Open si disputano in quattro Paesi.",
+      "options": [
+        "2",
+        "3",
+        "5",
+        "4"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-23",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Grande_Slam_(tennis)"
+    },
+    {
+      "id": "E24",
+      "category": "sport",
+      "difficulty": "medium",
+      "prompt": "Quanti giocatori schiera una squadra nel rugby a 15?",
+      "explanation": "Nel rugby union, detto rugby a 15, ogni squadra schiera quindici giocatori.",
+      "options": [
+        "11",
+        "13",
+        "15",
+        "16"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-24",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Rugby_a_15"
+    },
+    {
+      "id": "E25",
+      "category": "sport",
+      "difficulty": "medium",
+      "prompt": "Quale specialità dell'atletica consiste nel correre 100 metri su pista?",
+      "explanation": "I 100 metri piani sono una gara di velocità dell'atletica leggera.",
+      "options": [
+        "Mezzofondo",
+        "Velocità",
+        "Marcia",
+        "Salto"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-25",
+      "sourceUrl": "https://it.wikipedia.org/wiki/100_metri_piani"
+    },
+    {
+      "id": "E26",
+      "category": "sport",
+      "difficulty": "hard",
+      "prompt": "Da quante prove è composto il decathlon?",
+      "explanation": "Il decathlon maschile comprende dieci discipline di atletica.",
+      "options": [
+        "10",
+        "7",
+        "8",
+        "12"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-26",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Decathlon"
+    },
+    {
+      "id": "E27",
+      "category": "sport",
+      "difficulty": "hard",
+      "prompt": "Quali tre discipline compongono il triathlon classico?",
+      "explanation": "Nel triathlon si susseguono nuoto, ciclismo e corsa a piedi.",
+      "options": [
+        "Corsa, sci e ciclismo",
+        "Nuoto, canottaggio e corsa",
+        "Ciclismo, corsa e scherma",
+        "Nuoto, ciclismo e corsa"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-27",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Triathlon"
+    },
+    {
+      "id": "E28",
+      "category": "sport",
+      "difficulty": "hard",
+      "prompt": "Quale maglia identifica il leader della classifica generale del Giro d'Italia?",
+      "explanation": "La maglia rosa è il simbolo del primato nella classifica generale del Giro d'Italia.",
+      "options": [
+        "Maglia gialla",
+        "Maglia verde",
+        "Maglia rosa",
+        "Maglia a pois"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-28",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Giro_d'Italia"
+    },
+    {
+      "id": "E29",
+      "category": "sport",
+      "difficulty": "hard",
+      "prompt": "Quale maglia identifica il primo della classifica generale del Tour de France?",
+      "explanation": "La maglia gialla contraddistingue il leader della classifica generale del Tour de France.",
+      "options": [
+        "Maglia rosa",
+        "Maglia gialla",
+        "Maglia bianca a pois rossi",
+        "Maglia verde"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-29",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Tour_de_France"
+    },
+    {
+      "id": "E30",
+      "category": "sport",
+      "difficulty": "hard",
+      "prompt": "In quale sport si usa il termine ippon?",
+      "explanation": "Nel judo l'ippon è un punteggio che determina la vittoria immediata.",
+      "options": [
+        "Judo",
+        "Scherma",
+        "Badminton",
+        "Pugilato"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-30",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Ippon"
+    },
+    {
+      "id": "E31",
+      "category": "cinema",
+      "difficulty": "easy",
+      "prompt": "Chi ha diretto il film Il padrino del 1972?",
+      "explanation": "Francis Ford Coppola diresse Il padrino, uscito nel 1972.",
+      "options": [
+        "Steven Spielberg",
+        "Martin Scorsese",
+        "George Lucas",
+        "Francis Ford Coppola"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-31",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Il_padrino_(film)"
+    },
+    {
+      "id": "E32",
+      "category": "cinema",
+      "difficulty": "easy",
+      "prompt": "Chi ha diretto il film Titanic del 1997?",
+      "explanation": "James Cameron è il regista del film Titanic del 1997.",
+      "options": [
+        "Peter Jackson",
+        "Ridley Scott",
+        "James Cameron",
+        "Tim Burton"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-32",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Titanic_(film_1997)"
+    },
+    {
+      "id": "E33",
+      "category": "cinema",
+      "difficulty": "easy",
+      "prompt": "In quale scuola studia magia Harry Potter?",
+      "explanation": "Hogwarts è la scuola di magia frequentata da Harry Potter.",
+      "options": [
+        "Nevermore",
+        "Hogwarts",
+        "Beauxbatons soltanto",
+        "Narnia"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-33",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Hogwarts"
+    },
+    {
+      "id": "E34",
+      "category": "cinema",
+      "difficulty": "easy",
+      "prompt": "Come si chiama il cowboy giocattolo protagonista di Toy Story?",
+      "explanation": "Woody è il pupazzo cowboy protagonista della serie Toy Story.",
+      "options": [
+        "Woody",
+        "Buzz Lightyear",
+        "Rex",
+        "Slinky"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-34",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Woody_(Toy_Story)"
+    },
+    {
+      "id": "E35",
+      "category": "cinema",
+      "difficulty": "easy",
+      "prompt": "Come si chiama la sorella di Elsa nel film Frozen?",
+      "explanation": "Anna ed Elsa sono le due sorelle al centro del film Frozen.",
+      "options": [
+        "Rapunzel",
+        "Ariel",
+        "Merida",
+        "Anna"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-35",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Frozen_-_Il_regno_di_ghiaccio"
+    },
+    {
+      "id": "E36",
+      "category": "cinema",
+      "difficulty": "medium",
+      "prompt": "Quale regista ha diretto 2001: Odissea nello spazio?",
+      "explanation": "Stanley Kubrick diresse 2001: Odissea nello spazio del 1968.",
+      "options": [
+        "Alfred Hitchcock",
+        "David Lynch",
+        "Stanley Kubrick",
+        "Federico Fellini"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-36",
+      "sourceUrl": "https://it.wikipedia.org/wiki/2001%3A_Odissea_nello_spazio"
+    },
+    {
+      "id": "E37",
+      "category": "cinema",
+      "difficulty": "medium",
+      "prompt": "Quale regista sudcoreano ha diretto Parasite?",
+      "explanation": "Bong Joon-ho diresse Parasite, vincitore dell'Oscar al miglior film.",
+      "options": [
+        "Park Chan-wook",
+        "Bong Joon-ho",
+        "Kim Ki-duk",
+        "Hong Sang-soo"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-37",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Parasite_(film_2019)"
+    },
+    {
+      "id": "E38",
+      "category": "cinema",
+      "difficulty": "medium",
+      "prompt": "Chi ha diretto e interpretato La vita è bella del 1997?",
+      "explanation": "Roberto Benigni fu regista e protagonista de La vita è bella.",
+      "options": [
+        "Roberto Benigni",
+        "Carlo Verdone",
+        "Massimo Troisi",
+        "Paolo Sorrentino"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-38",
+      "sourceUrl": "https://it.wikipedia.org/wiki/La_vita_%C3%A8_bella_(film_1997)"
+    },
+    {
+      "id": "E39",
+      "category": "cinema",
+      "difficulty": "medium",
+      "prompt": "Chi ha diretto il film animato La città incantata?",
+      "explanation": "La città incantata fu diretto da Hayao Miyazaki.",
+      "options": [
+        "Isao Takahata",
+        "Makoto Shinkai",
+        "Satoshi Kon",
+        "Hayao Miyazaki"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-39",
+      "sourceUrl": "https://it.wikipedia.org/wiki/La_citt%C3%A0_incantata"
+    },
+    {
+      "id": "E40",
+      "category": "cinema",
+      "difficulty": "medium",
+      "prompt": "Quale regista ha diretto E.T. l'extra-terrestre?",
+      "explanation": "Steven Spielberg diresse E.T. l'extra-terrestre nel 1982.",
+      "options": [
+        "James Cameron",
+        "Robert Zemeckis",
+        "Steven Spielberg",
+        "Ron Howard"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-40",
+      "sourceUrl": "https://it.wikipedia.org/wiki/E.T._l'extra-terrestre"
+    },
+    {
+      "id": "E41",
+      "category": "cinema",
+      "difficulty": "hard",
+      "prompt": "Quale regista tedesco ha diretto Metropolis del 1927?",
+      "explanation": "Fritz Lang diresse il film di fantascienza Metropolis nel 1927.",
+      "options": [
+        "F. W. Murnau",
+        "Fritz Lang",
+        "Ernst Lubitsch",
+        "Werner Herzog"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-41",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Metropolis_(film_1927)"
+    },
+    {
+      "id": "E42",
+      "category": "cinema",
+      "difficulty": "hard",
+      "prompt": "Quale regista svedese ha diretto Il settimo sigillo?",
+      "explanation": "Ingmar Bergman diresse Il settimo sigillo, uscito nel 1957.",
+      "options": [
+        "Ingmar Bergman",
+        "Lars von Trier",
+        "Carl Theodor Dreyer",
+        "Roy Andersson"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-42",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Il_settimo_sigillo"
+    },
+    {
+      "id": "E43",
+      "category": "cinema",
+      "difficulty": "hard",
+      "prompt": "Chi ha diretto il film Rashomon del 1950?",
+      "explanation": "Akira Kurosawa diresse Rashomon nel 1950.",
+      "options": [
+        "Yasujirō Ozu",
+        "Kenji Mizoguchi",
+        "Masaki Kobayashi",
+        "Akira Kurosawa"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-43",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Rashomon"
+    },
+    {
+      "id": "E44",
+      "category": "cinema",
+      "difficulty": "hard",
+      "prompt": "Chi ha diretto Ladri di biciclette del 1948?",
+      "explanation": "Vittorio De Sica diresse Ladri di biciclette.",
+      "options": [
+        "Roberto Rossellini",
+        "Luchino Visconti",
+        "Vittorio De Sica",
+        "Federico Fellini"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-44",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Ladri_di_biciclette"
+    },
+    {
+      "id": "E45",
+      "category": "cinema",
+      "difficulty": "hard",
+      "prompt": "Chi ha diretto e interpretato Quarto potere del 1941?",
+      "explanation": "Orson Welles fu regista e protagonista di Quarto potere.",
+      "options": [
+        "Charlie Chaplin",
+        "Orson Welles",
+        "Billy Wilder",
+        "John Ford"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-45",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Quarto_potere"
+    },
+    {
+      "id": "E46",
+      "category": "cultura",
+      "difficulty": "easy",
+      "prompt": "Chi è l'autore della Divina Commedia?",
+      "explanation": "Dante Alighieri scrisse la Divina Commedia.",
+      "options": [
+        "Dante Alighieri",
+        "Francesco Petrarca",
+        "Giovanni Boccaccio",
+        "Ludovico Ariosto"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-46",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Divina_Commedia"
+    },
+    {
+      "id": "E47",
+      "category": "cultura",
+      "difficulty": "easy",
+      "prompt": "Chi ha dipinto la Gioconda, detta anche Monna Lisa?",
+      "explanation": "La Gioconda è un dipinto di Leonardo da Vinci.",
+      "options": [
+        "Raffaello",
+        "Michelangelo",
+        "Sandro Botticelli",
+        "Leonardo da Vinci"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-47",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Gioconda"
+    },
+    {
+      "id": "E48",
+      "category": "cultura",
+      "difficulty": "easy",
+      "prompt": "Chi compose l'opera Il flauto magico?",
+      "explanation": "Mozart compose l'opera Il flauto magico.",
+      "options": [
+        "Ludwig van Beethoven",
+        "Giuseppe Verdi",
+        "Wolfgang Amadeus Mozart",
+        "Giacomo Puccini"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-48",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Il_flauto_magico"
+    },
+    {
+      "id": "E49",
+      "category": "cultura",
+      "difficulty": "easy",
+      "prompt": "Chi scrisse il romanzo Don Chisciotte?",
+      "explanation": "Miguel de Cervantes è l'autore del Don Chisciotte.",
+      "options": [
+        "William Shakespeare",
+        "Miguel de Cervantes",
+        "Victor Hugo",
+        "Jules Verne"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-49",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Don_Chisciotte_della_Mancia"
+    },
+    {
+      "id": "E50",
+      "category": "cultura",
+      "difficulty": "easy",
+      "prompt": "Chi scolpì la Pietà conservata nella Basilica di San Pietro?",
+      "explanation": "Michelangelo scolpì la Pietà oggi conservata in San Pietro.",
+      "options": [
+        "Michelangelo Buonarroti",
+        "Gian Lorenzo Bernini",
+        "Antonio Canova",
+        "Donatello"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-50",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Piet%C3%A0_vaticana"
+    },
+    {
+      "id": "E51",
+      "category": "cultura",
+      "difficulty": "medium",
+      "prompt": "Chi è l'autore del romanzo 1984?",
+      "explanation": "George Orwell scrisse il romanzo distopico 1984.",
+      "options": [
+        "Aldous Huxley",
+        "Ray Bradbury",
+        "J. R. R. Tolkien",
+        "George Orwell"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-51",
+      "sourceUrl": "https://it.wikipedia.org/wiki/1984_(romanzo)"
+    },
+    {
+      "id": "E52",
+      "category": "cultura",
+      "difficulty": "medium",
+      "prompt": "Chi dipinse Guernica nel 1937?",
+      "explanation": "Pablo Picasso dipinse Guernica nel 1937.",
+      "options": [
+        "Salvador Dalí",
+        "Joan Miró",
+        "Pablo Picasso",
+        "Henri Matisse"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-52",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Guernica_(Picasso)"
+    },
+    {
+      "id": "E53",
+      "category": "cultura",
+      "difficulty": "medium",
+      "prompt": "Chi scrisse Il piccolo principe?",
+      "explanation": "Antoine de Saint-Exupéry è l'autore de Il piccolo principe.",
+      "options": [
+        "Jules Verne",
+        "Antoine de Saint-Exupéry",
+        "Albert Camus",
+        "Victor Hugo"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-53",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Il_piccolo_principe"
+    },
+    {
+      "id": "E54",
+      "category": "cultura",
+      "difficulty": "medium",
+      "prompt": "Chi scrisse la tragedia Romeo e Giulietta?",
+      "explanation": "Romeo e Giulietta è una tragedia di William Shakespeare.",
+      "options": [
+        "William Shakespeare",
+        "Christopher Marlowe",
+        "Oscar Wilde",
+        "Charles Dickens"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-54",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Romeo_e_Giulietta"
+    },
+    {
+      "id": "E55",
+      "category": "cultura",
+      "difficulty": "medium",
+      "prompt": "Chi compose il ciclo di concerti Le quattro stagioni?",
+      "explanation": "Antonio Vivaldi compose Le quattro stagioni.",
+      "options": [
+        "Johann Sebastian Bach",
+        "Georg Friedrich Händel",
+        "Franz Joseph Haydn",
+        "Antonio Vivaldi"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-55",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Le_quattro_stagioni"
+    },
+    {
+      "id": "E56",
+      "category": "cultura",
+      "difficulty": "hard",
+      "prompt": "Chi è l'autore del romanzo Cent'anni di solitudine?",
+      "explanation": "Gabriel García Márquez scrisse Cent'anni di solitudine.",
+      "options": [
+        "Jorge Luis Borges",
+        "Mario Vargas Llosa",
+        "Gabriel García Márquez",
+        "Julio Cortázar"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-56",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Cent'anni_di_solitudine"
+    },
+    {
+      "id": "E57",
+      "category": "cultura",
+      "difficulty": "hard",
+      "prompt": "Chi scrisse il romanzo modernista Ulisse, pubblicato nel 1922?",
+      "explanation": "James Joyce scrisse il romanzo Ulisse, pubblicato nel 1922.",
+      "options": [
+        "Virginia Woolf",
+        "James Joyce",
+        "Franz Kafka",
+        "Marcel Proust"
+      ],
+      "correctIndex": 1,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-57",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Ulisse_(Joyce)"
+    },
+    {
+      "id": "E58",
+      "category": "cultura",
+      "difficulty": "hard",
+      "prompt": "Chi ha dipinto Il giardino delle delizie?",
+      "explanation": "Il giardino delle delizie è un trittico di Hieronymus Bosch.",
+      "options": [
+        "Hieronymus Bosch",
+        "Pieter Bruegel il Vecchio",
+        "Albrecht Dürer",
+        "Jan van Eyck"
+      ],
+      "correctIndex": 0,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-58",
+      "sourceUrl": "https://it.wikipedia.org/wiki/Il_giardino_delle_delizie"
+    },
+    {
+      "id": "E59",
+      "category": "cultura",
+      "difficulty": "hard",
+      "prompt": "Chi ha scritto il romanzo La coscienza di Zeno?",
+      "explanation": "Italo Svevo è l'autore de La coscienza di Zeno.",
+      "options": [
+        "Luigi Pirandello",
+        "Alberto Moravia",
+        "Cesare Pavese",
+        "Italo Svevo"
+      ],
+      "correctIndex": 3,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-59",
+      "sourceUrl": "https://it.wikipedia.org/wiki/La_coscienza_di_Zeno"
+    },
+    {
+      "id": "E60",
+      "category": "cultura",
+      "difficulty": "hard",
+      "prompt": "Chi ha dipinto La persistenza della memoria, con gli orologi molli?",
+      "explanation": "Salvador Dalí dipinse La persistenza della memoria nel 1931.",
+      "options": [
+        "René Magritte",
+        "Giorgio de Chirico",
+        "Salvador Dalí",
+        "Pablo Picasso"
+      ],
+      "correctIndex": 2,
+      "sourceId": "quizario-editorial",
+      "sourceItemId": "quizario-editorial-60",
+      "sourceUrl": "https://it.wikipedia.org/wiki/La_persistenza_della_memoria"
+    }
+  ]
+}
