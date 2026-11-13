@@ -110,6 +110,84 @@ try{
   log('daily score and consecutive streak come from authenticated D1 rows');
   const rated=await DB.prepare('SELECT COUNT(*) AS total FROM question_rating_dedupe').first();assert.equal(rated.total,10);
   const results=await DB.prepare("SELECT score,total FROM quiz_results WHERE user_id='u-api' AND quiz_slug='daily'").first();assert.equal(results.total,10);log('rating dedupe and account results saved');
+  // Opt-in leaderboard: no consent by default and no guest ranking submissions.
+  const publicBefore=await api('/api/quiz/daily/leaderboard');
+  assert.equal(publicBefore.status,200);
+  assert.equal(publicBefore.participants,0);
+  assert.equal(publicBefore.entries.length,0);
+  assert.equal(publicBefore.viewerOptedIn,false);
+  const guestJoin=await api('/api/quiz/daily/leaderboard','POST',{enabled:true});
+  assert.equal(guestJoin.status,401);
+  const invalidConsent=await api('/api/quiz/daily/leaderboard','POST',{enabled:'true'},user);
+  assert.equal(invalidConsent.status,400);
+  const beforeConsent=await api('/api/quiz/daily/leaderboard','GET',undefined,user);
+  assert.equal(beforeConsent.participants,0);
+  assert.equal(beforeConsent.viewerOptedIn,false);
+  const join=await api('/api/quiz/daily/leaderboard','POST',{enabled:true},user);
+  assert.equal(join.status,200);assert.equal(join.optedIn,true);
+  const optedIn=await api('/api/quiz/daily/leaderboard','GET',undefined,user);
+  assert.equal(optedIn.viewerOptedIn,true);
+  assert.equal(optedIn.participants,1);assert.equal(optedIn.entries.length,1);
+  assert.equal(optedIn.viewerRank?.rank,1);
+  assert.equal(optedIn.entries[0].score,completedDaily.score);
+  assert.match(optedIn.entries[0].alias,/^Giocatore [A-F0-9]{6}$/);
+  assert.equal(optedIn.entries[0].isMe,true);
+  const guestLeaderboard=await api('/api/quiz/daily/leaderboard');
+  assert.equal(guestLeaderboard.entries[0].isMe,false);
+  assert.equal(guestLeaderboard.entries[0].alias,optedIn.entries[0].alias);
+  for(const payload of [optedIn,guestLeaderboard]) {
+    const serial=JSON.stringify(payload);
+    assert.ok(!serial.includes('player@test.example'));
+    assert.ok(!serial.includes('"user_id"'));
+    assert.ok(!serial.includes('"nickname"'));
+    assert.ok(!serial.includes('"email"'));
+  }
+  // Verify score descending and speed ascending with top 20 + the viewer outside the list.
+  const extraUsers=Array.from({length:21},(_,i)=>'ranked-player-'+i);
+  const fastRows=[];
+  for(let i=0;i<extraUsers.length;i++){
+    const id=extraUsers[i];
+    const time=i+1;
+    await DB.prepare(`INSERT INTO users(id,nickname,email,password_hash,password_salt,password_iterations,created_at,updated_at)
+      VALUES(?,?,?,'hash','salt',210000,datetime('now'),datetime('now'))`)
+      .bind(id,'Test player '+i,'rank'+i+'@test.example').run();
+    await DB.prepare(`INSERT INTO quiz_results(user_id,quiz_date,quiz_slug,score,total,duration_seconds,completed_at)
+      VALUES(? ,?,'daily',10,10,?,?)`)
+      .bind(id,catalogue.today,time,catalogue.today+'T12:00:00Z').run();
+    await DB.prepare('INSERT INTO daily_leaderboard_opt_ins(user_id) VALUES(?)').bind(id).run();
+    fastRows.push(id);
+  }
+  const slowUser='slow-day-player';
+  await DB.prepare(`INSERT INTO users(id,nickname,email,password_hash,password_salt,password_iterations,created_at,updated_at)
+    VALUES(?,'Slow','slow@test.example','hash','salt',210000,datetime('now'),datetime('now'))`)
+    .bind(slowUser).run();
+  await DB.prepare(`INSERT INTO quiz_results(user_id,quiz_date,quiz_slug,score,total,duration_seconds,completed_at)
+    VALUES(? ,?,'daily',0,10,999,?)`)
+    .bind(slowUser,catalogue.today,catalogue.today+'T12:00:00Z').run();
+  await DB.prepare('INSERT INTO daily_leaderboard_opt_ins(user_id) VALUES(?)').bind(slowUser).run();
+  const top=await api('/api/quiz/daily/leaderboard');
+  assert.equal(top.participants,23);
+  assert.equal(top.entries.length,20);
+  assert.deepEqual(top.entries.map(x=>x.rank),Array.from({length:20},(_,i)=>i+1));
+  assert.ok(top.entries.every(x=>x.score===10));
+  assert.deepEqual(top.entries.map(x=>x.durationSeconds),Array.from({length:20},(_,i)=>i+1));
+  const outside=await api('/api/quiz/daily/leaderboard','GET',undefined,{id:slowUser,email:'slow@test.example'});
+  assert.equal(outside.viewerRank?.rank,23);
+  assert.equal(outside.viewerRank?.score,0);
+  assert.equal(outside.entries.length,20);
+  assert.ok(!outside.entries.some(x=>x.isMe));
+  const leave=await api('/api/quiz/daily/leaderboard','POST',{enabled:false},user);
+  assert.equal(leave.optedIn,false);
+  const afterLeave=await api('/api/quiz/daily/leaderboard','GET',undefined,user);
+  assert.equal(afterLeave.viewerOptedIn,false);
+  assert.equal(afterLeave.viewerRank,null);
+  assert.equal(afterLeave.participants,22);
+  const verifyNoConsent=await DB.prepare('SELECT COUNT(*) AS n FROM daily_leaderboard_opt_ins WHERE user_id=?').bind(user.id).first();
+  assert.equal(verifyNoConsent.n,0);
+  await DB.prepare('DELETE FROM users WHERE id=?').bind(slowUser).run();
+  const consentAfterDelete=await DB.prepare('SELECT 1 AS present FROM daily_leaderboard_opt_ins WHERE user_id=?').bind(slowUser).first();
+  assert.equal(consentAfterDelete,null);
+  log('opt-in only leaderboard, privacy, score/time ranking, outside-top-20 own rank, opt-out and cascade');
   const completedAgain=await api('/api/quiz/start','POST',{mode:'daily'},user);assert.equal(completedAgain.status,409);log('completed daily cannot be replayed');
   const privateReview=await api('/api/admin/questions');assert.equal(privateReview.status,403);
   const admin={id:'admin',email:'admin@test.example'};
