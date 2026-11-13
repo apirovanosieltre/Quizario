@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../core/auth.service';
 import { ProgressService } from '../core/progress.service';
 import { DailyProgressService } from '../core/daily-progress.service';
+import { dailyCalendar, nextStreakMilestone, STREAK_MILESTONES } from '../core/daily-streak';
 import { QuizApiService, QuizCatalog } from '../core/quiz-api.service';
 import { CATEGORY_STYLES } from '../data/categories';
 import { apiErrorMessage } from '../core/errors';
@@ -77,6 +78,59 @@ import { apiErrorMessage } from '../core/errors';
         }
       </div>
     </div></section>
+    @if (daily.current(); as info) {
+      <section class="container daily-goals-section" aria-label="Obiettivi e calendario giornaliero">
+        <div class="daily-goals-head">
+          <div>
+            <div class="eyebrow secondary">IL TUO PERCORSO GIORNALIERO</div>
+            <h2>Una piccola sfida, ogni giorno.</h2>
+          </div>
+          <span class="daily-goal-caption">{{info.scope==='account'?'Progressi del profilo':'Progressi su questo dispositivo'}}</span>
+        </div>
+        <div class="daily-goals-summary">
+          <div class="daily-goal-tile">
+            <span>Obiettivo di oggi</span><strong>{{info.completed?'1 / 1':'0 / 1'}}</strong>
+            <small>{{info.completed?'✓ Completato, anche se hai sbagliato':'Completa le 10 domande per raggiungerlo'}}</small>
+          </div>
+          <div class="daily-goal-tile">
+            <span>🔥 Serie attuale</span><strong>{{info.streak}} {{info.streak===1?'giorno':'giorni'}}</strong>
+            <small>Record: {{info.bestStreak}} {{info.bestStreak===1?'giorno':'giorni'}}</small>
+          </div>
+          <div class="daily-goal-tile">
+            <span>Prossimo traguardo</span>
+            @if (nextMilestone(); as next) {
+              <strong>{{next}} giorni</strong><small>Ti mancano {{next-info.streak}} {{next-info.streak===1?'giorno':'giorni'}}</small>
+            } @else {
+              <strong>100+ giorni</strong><small>Hai raggiunto tutti i traguardi previsti!</small>
+            }
+          </div>
+        </div>
+        <div class="daily-calendar-card">
+          <div class="daily-calendar-heading">
+            <h3>Le ultime quattro settimane</h3>
+            <span>{{calendarCompleted()}} su 28 giorni completati</span>
+          </div>
+          <div class="daily-calendar-grid" role="list" aria-label="Ultimi 28 giorni della sfida">
+            @for (day of calendar(); track day.date) {
+              <div role="listitem" class="daily-calendar-day"
+                [class.is-done]="day.done" [class.is-today]="day.date===info.today"
+                [attr.title]="day.date + (day.done?' · Completata':' · Non completata')"
+                [attr.aria-label]="day.date + (day.done?' completata':' non completata')">
+                <span>{{day.date.slice(-2)}}</span><span class="calendar-day-symbol" aria-hidden="true">{{day.done?'✓':'·'}}</span>
+              </div>
+            }
+          </div>
+          <div class="daily-milestones" aria-label="Traguardi streak">
+            @for (goal of milestoneList; track goal) {
+              <span [class.unlocked]="info.bestStreak>=goal" [attr.aria-label]="goal+' giorni '+(info.bestStreak>=goal?'raggiunti':'non ancora raggiunti')">
+                {{info.bestStreak>=goal?'✦':'◇'}} {{goal}} giorni
+              </span>
+            }
+          </div>
+          <p class="helper-note">Ogni giorno conta quando completi la sfida, anche con 0 risposte corrette. I quiz liberi restano sempre disponibili.</p>
+        </div>
+      </section>
+    }
     <section class="container section" id="categorie">
       <div class="section-heading"><div><div class="eyebrow secondary">QUIZ LIBERO</div><h2>Qual è il tuo forte?</h2></div>
         <p>Scegli categoria, numero di domande e difficoltà. Le risposte corrette vengono rivelate solo dopo aver giocato.</p></div>
@@ -116,6 +170,11 @@ export class HomePage implements OnInit {
   protected readonly auth=inject(AuthService);
   protected readonly progress=inject(ProgressService);
   protected readonly daily=inject(DailyProgressService);
+  protected readonly milestoneList=STREAK_MILESTONES.slice(0,4);
+  protected readonly nextMilestone=computed(()=>nextStreakMilestone(this.daily.current()?.streak??0));
+  protected readonly calendar=computed(()=>this.daily.current()?
+    dailyCalendar(this.daily.current()!.today,this.daily.current()!.recentDays):[]);
+  protected readonly calendarCompleted=computed(()=>this.calendar().filter(day=>day.done).length);
   private readonly api=inject(QuizApiService);
   protected readonly catalog=signal<QuizCatalog|null>(null);
   protected readonly error=signal('');
