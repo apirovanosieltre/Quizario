@@ -1,0 +1,60 @@
+name: Deploy Quizario website and API Worker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-quizario.yml'
+      - 'wrangler.jsonc'
+      - 'scripts/verify-live-deployment.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quizario-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build, deploy and verify Quizario
+    runs-on: ubuntu-latest
+    environment: Environments
+    timeout-minutes: 20
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.2'
+      - name: Use Python for integration checks
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Build and check Worker + Angular
+        run: npm run check
+      - name: Run integrated API tests
+        run: npm run questions:api-tests
+      - name: Run security tests
+        run: npm run security:tests
+      - name: Verify D1 tables and triggers before deploy (read-only)
+        run: node scripts/verify-cloudflare-d1.mjs
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Verify leaderboard consent schema (read-only)
+        run: node scripts/verify-leaderboard-d1.mjs
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Deploy to Cloudflare Workers and bind quizario.cicioweb.app
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Verify homepage, health, Turnstile config and question catalog on real domain
+        run: node scripts/verify-live-deployment.mjs
