@@ -58,7 +58,7 @@ export function longestDailyStreak(days:Iterable<string>):number {
   const dates=[...new Set(days)].sort();
   let longest=0,current=0,prior:string|null=null;
   for(const date of dates){
-    if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))continue;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date))continue;
     current=prior&&previousDay(date)===prior?current+1:1;
     longest=Math.max(longest,current);
     prior=date;
