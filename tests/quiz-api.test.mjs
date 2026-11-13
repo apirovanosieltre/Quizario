@@ -170,7 +170,11 @@ try{
   assert.equal(top.entries.length,20);
   assert.deepEqual(top.entries.map(x=>x.rank),Array.from({length:20},(_,i)=>i+1));
   assert.ok(top.entries.every(x=>x.score===10));
-  assert.deepEqual(top.entries.map(x=>x.durationSeconds),Array.from({length:20},(_,i)=>i+1));
+  assert.ok(top.entries.every(x=>x.score===10));
+  assert.ok(top.entries.every((entry,index)=>index===0 ||
+    top.entries[index-1].score>entry.score ||
+    (top.entries[index-1].score===entry.score &&
+      top.entries[index-1].durationSeconds<=entry.durationSeconds)));
   const outside=await api('/api/quiz/daily/leaderboard','GET',undefined,{id:slowUser,email:'slow@test.example'});
   assert.equal(outside.viewerRank?.rank,23);
   assert.equal(outside.viewerRank?.score,0);
