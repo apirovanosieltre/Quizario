@@ -130,6 +130,68 @@ async function ensureDaily(db:D1Database, day:string):Promise<string[]> {
   return (verified.results??[]).map(x=>x.id);
 }
 /** The database is the authority for logged-in daily completions, including zero-score games. */
+interface RankedPlayer {
+  user_id:string;
+  score:number;
+  total:number;
+  duration_seconds:number;
+  position:number;
+  participants:number;
+}
+
+/**
+ * A deliberately public but pseudonymous leaderboard. Only explicit opt-ins are ranked.
+ * Email, nickname and user ID never cross the API boundary.
+ */
+async function dailyLeaderboard(request:Request,env:QuizEnv,user:Player|null):Promise<Response> {
+  if(request.method==='POST'){
+    if(!user)throw new QuizError(401,'Accedi per partecipare alla classifica.');
+    const body=await requestJson(request);
+    if(typeof body['enabled']!=='boolean'||Object.keys(body).length!==1)
+      throw new QuizError(400,'Preferenza classifica non valida.');
+    if(body['enabled']){
+      await env.DB.prepare(`INSERT OR IGNORE INTO daily_leaderboard_opt_ins(user_id)
+        VALUES (?)`).bind(user.id).run();
+    }else{
+      await env.DB.prepare('DELETE FROM daily_leaderboard_opt_ins WHERE user_id=?')
+        .bind(user.id).run();
+    }
+    return reply({optedIn:body['enabled']});
+  }
+  if(request.method!=='GET')throw new QuizError(405,'Metodo non consentito.');
+  const today=romeDay();
+  const [raw,consent]=await Promise.all([
+    env.DB.prepare(`WITH ranked AS (
+      SELECT r.user_id,r.score,r.total,r.duration_seconds,
+        ROW_NUMBER() OVER(ORDER BY r.score DESC,r.duration_seconds ASC,r.completed_at ASC,r.user_id ASC) AS position,
+        COUNT(*) OVER() AS participants
+      FROM quiz_results r
+      JOIN daily_leaderboard_opt_ins opt ON opt.user_id=r.user_id
+      WHERE r.quiz_date=? AND r.quiz_slug='daily'
+    )
+    SELECT user_id,score,total,duration_seconds,position,participants
+    FROM ranked WHERE position<=20 OR user_id=? ORDER BY position LIMIT 21`)
+      .bind(today,user?.id??'').all<RankedPlayer>(),
+    user?env.DB.prepare('SELECT 1 AS enabled FROM daily_leaderboard_opt_ins WHERE user_id=?')
+      .bind(user.id).first<{enabled:number}>():Promise.resolve(null),
+  ]);
+  const ranked=raw.results??[];
+  const entries=await Promise.all(ranked.map(async row=>({
+    rank:row.position,
+    alias:'Giocatore '+(await digest(`quizario:leaderboard:v1:${today}:${row.user_id}`)).slice(0,6).toUpperCase(),
+    score:row.score,total:row.total,durationSeconds:row.duration_seconds,
+    isMe:row.user_id===user?.id,
+  })));
+  const viewerRank=entries.find(row=>row.isMe)??null;
+  return reply({
+    today,participants:ranked[0]?.participants??0,
+    entries:entries.filter(row=>row.rank<=20),
+    viewerRank,
+    viewerOptedIn:!!consent,
+    signedIn:!!user,
+  });
+}
+
 async function dailyStatus(env:QuizEnv,user:Player|null):Promise<Response> {
   if(!user)throw new QuizError(401,'Accedi per vedere i risultati giornalieri del profilo.');
   const today=romeDay();
@@ -488,6 +550,7 @@ export async function quizApi(request:Request,env:QuizEnv,user:Player|null):Prom
     const tiers=await env.DB.prepare("SELECT effective_difficulty AS tier,COUNT(*) AS total FROM questions WHERE status='published' AND language='it' GROUP BY effective_difficulty").all();
     return reply({categories:items.results??[],difficulties:tiers.results??[],today:romeDay()});
   }
+  if(path==='/api/quiz/daily/leaderboard')return dailyLeaderboard(request,env,user);
   if(path==='/api/quiz/daily/status'&&request.method==='GET')return dailyStatus(env,user);
   if(path==='/api/quiz/start'&&request.method==='POST')return start(request,env,user);
   if(path==='/api/quiz/resume'&&request.method==='POST')return resume(request,env,user);
