@@ -20,6 +20,22 @@ export interface QuizReview {
   is_correct:number;
   explanation:string|null;
 }
+export interface DailyLeaderboardEntry {
+  rank:number;
+  alias:string;
+  score:number;
+  total:number;
+  durationSeconds:number;
+  isMe:boolean;
+}
+export interface DailyLeaderboard {
+  today:string;
+  participants:number;
+  entries:DailyLeaderboardEntry[];
+  viewerRank:DailyLeaderboardEntry|null;
+  viewerOptedIn:boolean;
+  signedIn:boolean;
+}
 export interface QuizSession {
   sessionToken:string;
   mode:QuizMode;
@@ -58,6 +74,10 @@ export class QuizApiService {
   private readonly http=inject(HttpClient);
   catalog():Promise<QuizCatalog> { return firstValueFrom(this.http.get<QuizCatalog>('/api/quiz/catalog')); }
   dailyStatus():Promise<DailySummary> { return firstValueFrom(this.http.get<DailySummary>('/api/quiz/daily/status')); }
+  dailyLeaderboard():Promise<DailyLeaderboard> { return firstValueFrom(this.http.get<DailyLeaderboard>('/api/quiz/daily/leaderboard')); }
+  setLeaderboardConsent(enabled:boolean):Promise<{optedIn:boolean}> {
+    return firstValueFrom(this.http.post<{optedIn:boolean}>('/api/quiz/daily/leaderboard',{enabled}));
+  }
   start(mode:QuizMode, category:string|null, difficulty:Difficulty='mixed', count=10):Promise<QuizSession> {
     return firstValueFrom(this.http.post<QuizSession>('/api/quiz/start',mode==='daily'?{mode}:{mode,category,difficulty,count}));
   }
