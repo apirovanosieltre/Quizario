@@ -16,7 +16,7 @@ const totals=new Map();
 if(bank.version!==1||bank.publicationStatus!=='draft'||bank.reviewRequired!==true||bank.questions?.length!==60)
   throw Error('Expected exactly 60 questions marked draft/review required.');
 for(const item of bank.questions){
-  if(!/^E\\d{2}$/.test(item.id)||seen.has(item.id))throw Error('Duplicate or invalid editorial id '+item.id);
+  if(!/^E\d{2}$/.test(item.id)||seen.has(item.id))throw Error('Duplicate or invalid editorial id '+item.id);
   seen.add(item.id);
   if(!categories.includes(item.category)||!levels.includes(item.difficulty))throw Error('Invalid category or tier '+item.id);
   if(typeof item.prompt!=='string'||item.prompt.trim().length<12||item.prompt.length>500)throw Error('Invalid prompt '+item.id);
