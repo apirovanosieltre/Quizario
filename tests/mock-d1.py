@@ -8,7 +8,7 @@ root=Path(__file__).resolve().parents[1]
 db=sqlite3.connect(':memory:',isolation_level=None)
 db.row_factory=sqlite3.Row
 db.execute('PRAGMA foreign_keys=ON')
-for name in ('0001_core.sql','0002_question_bank.sql','0003_quiz_play.sql'):
+for name in ('0001_core.sql','0002_question_bank.sql','0003_quiz_play.sql','0004_daily_leaderboard.sql'):
     db.executescript((root/'migrations'/name).read_text())
 db.executescript((root/'imports/qa-only-local.sql').read_text())
 

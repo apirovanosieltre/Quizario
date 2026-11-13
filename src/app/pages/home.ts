@@ -155,6 +155,14 @@ import { apiErrorMessage } from '../core/errors';
         }
       </div>
     </section>
+    <section class="container leaderboard-teaser" aria-labelledby="leaderboard-teaser-heading">
+      <div class="leaderboard-teaser-copy">
+        <div class="eyebrow secondary">UNA SFIDA, UNA CLASSIFICA</div>
+        <h2 id="leaderboard-teaser-heading">Quanto in alto puoi arrivare?</h2>
+        <p>Scopri i migliori risultati del quiz giornaliero. Contano le risposte corrette, poi il tempo. La partecipazione è facoltativa e usa uno pseudonimo.</p>
+      </div>
+      <a class="button button-primary" routerLink="/classifica">Scopri la classifica ↗</a>
+    </section>
     <section class="container section stats-section">
       <div class="section-heading"><div><div class="eyebrow secondary">IL TUO PERCORSO</div><h2>Ogni risposta conta.</h2></div></div>
       <div class="stats-grid">
