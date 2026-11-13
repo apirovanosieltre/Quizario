@@ -41,5 +41,11 @@
         "period": 60
       }
     }
+  ],
+  "routes": [
+    {
+      "pattern": "quizario.cicioweb.app",
+      "custom_domain": true
+    }
   ]
 }
