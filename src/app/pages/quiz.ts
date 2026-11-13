@@ -52,6 +52,7 @@ import { CATEGORY_STYLES } from '../data/categories';
               <div><span>Streak attuale</span><strong>🔥 {{daily.current()?.streak}} {{daily.current()?.streak===1?'giorno':'giorni'}}</strong></div>
             </div>
             <p class="daily-scope-note">{{daily.current()?.scope==='account'?'Risultato verificato e conservato nel profilo.':'Risultato conservato su questo dispositivo.'}}</p>
+            <a class="button button-ghost" routerLink="/classifica">♛ Vedi la classifica di oggi ↗</a>
             <a class="button button-primary" routerLink="/" fragment="categorie">Scopri gli altri quiz ↗</a>
             <a class="daily-return-home" routerLink="/">Torna alla homepage</a>
           </div>
@@ -131,6 +132,9 @@ import { CATEGORY_STYLES } from '../data/categories';
                 }
                 <small>Domani ti aspetta una nuova sfida. Intanto puoi continuare a giocare!</small>
               </div>
+            }
+            @if (isDaily) {
+              <a class="daily-leaderboard-link" routerLink="/classifica">♛ Guarda la classifica del giorno ↗</a>
             }
             <div class="result-actions">
               @if (!isDaily) {
